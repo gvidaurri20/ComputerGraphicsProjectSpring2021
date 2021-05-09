@@ -1,6 +1,6 @@
 #define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
 #define GROUP_NUM "Group 42"
-#define LAST_EDIT_DATE "5/9/21 12:51AM"
+#define LAST_EDIT_DATE "5/9/21 2:52AM"
 #define LAST_EDITOR "Gabe Vidaurri"
 
 #include <GL/glew.h>
@@ -12,18 +12,18 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp> // Needed to debug glm things in output window
 
 #include "Model.h"
 #include "Shader.h"
 #include "QuatCamera.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <windows.h>
-#include <mmsystem.h>
-
-#include <glm/gtx/string_cast.hpp>
+#include <windows.h> // Needed to play music
+#include <mmsystem.h> // Needed to play music
 
 /*
  * main.cpp
@@ -39,11 +39,12 @@
 
  /* -- Shader and Model Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
-Model* ground; // The ground
+Model *ground; // The ground
+Model *ceiling; // The ceiling
 Model *sphere; // The floating monkey sphere in the center of the scene
 Model *sphereLight;
 Model *cylinder; // The floating cylinder above the monkey sphere
-Model* gun; // The gun
+Model *gun; // The gun
 Model *gunMuzzleLight; // The gun light above the muzzle 
 /* -- Shader and Model Declarations End Here -- */
 
@@ -316,11 +317,11 @@ void display(void)
 	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 
 	// Gun
-	gun->setOverrideDiffuseMaterial( glm::vec4(.3, 0.3, 0.3, 1.0));
-	gun->setOverrideAmbientMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	gun->setOverrideSpecularShininessMaterial( 40.0f);
-	gun->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	gun->render(glm::translate(1.0f,-1.0f,-2.0f)* glm::scale(.05f,.05f,.05f)*glm::rotate(-90.0f,0.0f,1.0f,0.0f) , projectionMatrix, false); // Render the gun
+	gun->setOverrideDiffuseMaterial(glm::vec4(.3, 0.3, 0.3, 1.0));
+	gun->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	gun->setOverrideSpecularShininessMaterial(40.0f);
+	gun->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	gun->render(glm::translate(1.0f,-1.0f,-2.0f) * glm::scale(.05f,.05f,.05f) * glm::rotate(-90.0f,0.0f,1.0f,0.0f), projectionMatrix, false); // Render the gun
 	
 	// Floating Cylinder
 	cylinder->setOverrideDiffuseMaterial( glm::vec4(1.0, 0.0, 0.0, 1.0));
@@ -332,18 +333,19 @@ void display(void)
 
 	// Renders the ground.
 	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
-
 	// Ground
-	ground->setOverrideDiffuseMaterial( glm::vec4(1.0, 0.0, 0.0, 1.0));
-	ground->setOverrideAmbientMaterial(  glm::vec4(0.2 , 0.0, 0.0, 1.0));
-	//ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
-	//ground->setOverrideSpecularShininessMaterial( 90.0f);
-	ground->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ground->render(viewMatrix*glm::translate(0.0f,-2.0f,0.0f)*glm::scale(100.0f,100.0f,300.0f), projectionMatrix, useMat);
+	ground->setOverrideDiffuseMaterial(glm::vec4(1.0, 0.0, 0.0, 1.0));
+	ground->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
+	//ground->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//ground->setOverrideSpecularShininessMaterial(90.0f);
+	ground->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	ground->render(viewMatrix * glm::translate(0.0f,-2.0f,0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
 
-	//roof
-	ground->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, false);
-
+	// Roof
+	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	ceiling->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
+	ceiling->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
 
 	// Render all the Walls
 	renderWalls();
@@ -547,7 +549,9 @@ int main(int argc, char** argv)
 
 	// Loads the models to use in the program.
 	ground = new Model(&shader, "models/plane.obj", "models/");
-	ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	ceiling = new Model(&shader, "models/plane.obj", "models/");
+	//ceiling->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	sphere = new Model(&shader,"models/sphere.obj", "models/");
 	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	sphereLight = new Model(&shader, "models/sphere.obj", "models/");
@@ -557,7 +561,7 @@ int main(int argc, char** argv)
 	
 	wallModels(); // Loads all wall models in our program
 
-	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC|SND_FILENAME|SND_LOOP);
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC|SND_FILENAME|SND_LOOP); // Plays the theme song from the first level of Doom
 
 	glutMainLoop();
 
