@@ -20,6 +20,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <windows.h>
+#include <mmsystem.h>
+
 #include <glm/gtx/string_cast.hpp>
 
 /*
@@ -552,6 +555,8 @@ int main(int argc, char** argv)
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
 	
 	wallModels(); // Loads all wall models in our program
+
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC|SND_FILENAME|SND_LOOP);
 
 	glutMainLoop();
 
