@@ -523,6 +523,7 @@ static void passiveMouse(int x, int y)
 }
 
 
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -534,7 +535,7 @@ int main(int argc, char** argv)
 	glewInit();
 	dumpInfo();
 	init();
-
+//	glutSpecialFunc2(windowSpecial);
 	glutDisplayFunc(display); 
 	glutIdleFunc(idle); 
 	glutReshapeFunc(reshape);
