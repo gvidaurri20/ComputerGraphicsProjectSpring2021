@@ -17,10 +17,15 @@ public:
 		Vertex() : Position(0.0f,0.0f,0.0f), Normal(0.0f,0.0f,1.0f){} // default values
 		glm::vec3 Position; /// x,y,z 
 		glm::vec3 Normal; // determines which way the vertex is 'facing'
-
 	};
-	
 
+	/*struct Textures {
+		GLuint ambient;
+		GLuint diffuse;
+		GLuint specular;
+		GLuint normal;
+	};
+	*/
 	/*
 	@param shader - a pointer to the shader program to use
 	@param filename - the name of the file with the relative directory included
@@ -36,6 +41,7 @@ public:
 	void setOverrideEmissiveMaterial(glm::vec4 color);
 	
 private:
+	//static std::map<std::string,GLuint> textureManager;
 	glm::vec4 diffuseOverride;
 	glm::vec4 specularOverride;
 	float shininessOverride;
@@ -43,19 +49,15 @@ private:
 	glm::vec4 emissiveOverride;
 	Shader *m_shader; // shader program
 	std::vector<tinyobj::shape_t> shapes; //a list of meshes and their respective materials
+	//std::vector<struct Textures> textures;
+
 	std::vector<GLuint> m_VBO;// vertex buffer IDs, each corresponding to a shape
 	std::vector<GLuint> m_NBO;// normal buffer IDs, each corresponding to a shape
+	//std::vector<GLuint> m_TCBO;// texture coord buffer IDs, each corresponding to a shape
 	std::vector<GLuint> m_IBO;// index buffer IDs, each corresponding to a shape
 
 	void updateBuffers(); //initialize your VBO and update when triangles are added
+	//GLuint LoadTexture(const char* filename);
 	
-	
-
-
-
-
-	
-
-
 };
 
