@@ -100,6 +100,6 @@ void main()
         spotlightEffect = 0;
 
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive + ambient + linearAttenuation*(diffuse + specular) + linearAttenuation*(spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight))*texColor ;
+    gl_FragColor = surfaceEmissive + ambient + linearAttenuation* (diffuse + specular)*texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
     
 }

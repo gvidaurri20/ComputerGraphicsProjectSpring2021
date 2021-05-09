@@ -16,6 +16,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "QuatCamera.h"
+#include "Error.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -47,7 +48,7 @@ Model *gunMuzzleLight; // The gun light above the muzzle
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 * wall8, * wall9, * wall10, * wall11, * wall12, * wall13, * wall14,
-* wall15, * wall16, * wall17, * wall18, * wall19, * wall20, * wall21;
+* wall15, * wall16, * wall17, * wall18, * wall19, * wall20, * wall21, *demon;
 /* -- Wall Model Declarations End Here -- */
 
 /* -- Matrix Declarations -- */
@@ -88,14 +89,14 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
 
-/* Report GL errors, if any, to stderr. */
+/* Report GL errors, if any, to stderr. 
 void checkError(const char *functionName)
 {
 	GLenum error;
 	while (( error = glGetError() ) != GL_NO_ERROR) {
 	  std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
 	}
-}
+}*/
 
 
 void initShader(void)
@@ -114,6 +115,9 @@ void initRendering(void)
 	checkError ("initRendering");
 }
 
+glm::mat4 getProjection(float nearfield, float fov) {
+	return glm::infinitePerspective(fov, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), nearfield);
+}
 
 void init(void) 
 {	
@@ -123,7 +127,8 @@ void init(void)
 	//camera = new QuatCamera(800,600,initpos, initlookatpnt, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	// Perspective projection matrix.
-	projectionMatrix = glm::perspective(45.0f, 800.0f/600.0f, 1.0f, 1000.0f);
+	projectionMatrix = //glm::perspective(45.0f, (float)glutGet(GLUT_WINDOW_HEIGHT)/(float)glutGet(GLUT_WINDOW_WIDTH), 1.0f, 1000.0f);
+		getProjection(1.0f, 45.0f);
 
 	// Load identity matrix into model matrix.
 	modelMatrix = glm::mat4();
@@ -294,7 +299,7 @@ void display(void)
 		shader.SetUniform("spotlightSpecular", glm::vec4(0.0, 0.0, 0.0, 1.0));
 	}
 	shader.SetUniform("spotlightExponent", 0.001f);
-	
+	shader.SetUniform("useTexture", true);
 	headModelMatrix = modelMatrix;
 
 	/* -- Renders objects in the scene -- */
@@ -325,7 +330,7 @@ void display(void)
 	cylinder->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
 	cylinder->setOverrideSpecularShininessMaterial( 90.0f);
 	cylinder->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	cylinder->render(viewMatrix*glm::translate(0.0f,5.0f,0.0f)*glm::rotate(180.0f,1.0f,0.0f,0.0f), projectionMatrix, useMat);
+	cylinder->render(viewMatrix*glm::translate(0.0f,5.0f,0.0f)*glm::rotate(180.0f,1.0f,0.0f,0.0f), projectionMatrix, false);
 
 	// Renders the ground.
 	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
@@ -336,7 +341,7 @@ void display(void)
 	//ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
 	//ground->setOverrideSpecularShininessMaterial( 90.0f);
 	ground->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ground->render(viewMatrix*glm::translate(0.0f,-2.0f,0.0f)*glm::scale(100.0f,100.0f,300.0f), projectionMatrix, useMat);
+	ground->render(viewMatrix*glm::translate(0.0f,-2.0f,0.0f)*glm::scale(100.0f,100.0f,300.0f), projectionMatrix, false);
 
 	//roof
 	ground->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, false);
@@ -350,6 +355,9 @@ void display(void)
 	gunMuzzleLight->setOverrideSpecularShininessMaterial(40.0f);
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
+	
+	//Render Cacodemon
+	demon->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	/* -- Done rendering objects in the scene -- */
 
 	glutSwapBuffers(); // Swap the buffers.
@@ -369,6 +377,7 @@ void idle()
 void reshape (int w, int h)
 {
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+	projectionMatrix = getProjection(1.0f, 45.0f);
 	checkError ("reshape");
 }
 
@@ -542,14 +551,15 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	// Loads the models to use in the program.
-	ground = new Model(&shader, "models/plane.obj", "models/");
+	ground = new Model(&shader, "models/plane.obj"/*, "models/"*/);
 	ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	sphere = new Model(&shader,"models/sphere.obj", "models/");
+	sphere = new Model(&shader,"models/sphere.obj"/*, "models/"*/);
 	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	sphereLight = new Model(&shader, "models/sphere.obj", "models/");
-	cylinder = new Model( &shader, "models/cylinder.obj", "models/");
+	sphereLight = new Model(&shader, "models/sphere.obj"/*, "models/"*/);
+	cylinder = new Model( &shader, "models/cylinder.obj"/*, "models/"*/);
 	gun = new Model(&shader, "models/m16_1.obj", "models/");
-	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
+	gunMuzzleLight = new Model(&shader, "models/cylinder.obj"/*, "models/"*/);
+	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	
 	wallModels(); // Loads all wall models in our program
 
