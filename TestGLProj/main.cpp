@@ -46,6 +46,7 @@ Model* sphereLight;
 Model* cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
+Model* demon;
 /* -- Shader and Model Declarations End Here -- */
 
 /* -- Wall Model Declarations -- */
@@ -92,14 +93,7 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
 
-/* Report GL errors, if any, to stderr. */
-void checkError(const char* functionName)
-{
-	GLenum error;
-	while ((error = glGetError()) != GL_NO_ERROR) {
-		std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
-	}
-}
+
 
 
 void initShader(void)
@@ -355,6 +349,8 @@ void display(void)
 	gunMuzzleLight->setOverrideSpecularShininessMaterial(40.0f);
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
+	
+	demon->render(viewMatrix * glm::translate(15.0f, 0.0f, 0.0f), projectionMatrix, false);
 	/* -- Done rendering objects in the scene -- */
 
 	glutSwapBuffers(); // Swap the buffers.
@@ -557,11 +553,12 @@ int main(int argc, char** argv)
 	cylinder = new Model(&shader, "models/cylinder.obj", "models/");
 	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
+	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 
 	wallModels(); // Loads all wall models in our program
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
-
+	
 	glutMainLoop();
 
 	return 0;
