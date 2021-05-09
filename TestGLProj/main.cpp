@@ -1,3 +1,8 @@
+#define PROJECT_NAME "Final Project for CS 4383 Quarles-Spring 2021"
+#define GROUP_NUM "Group 42"
+#define LAST_EDIT_DATE "5/9/21 12:51AM"
+#define LAST_EDITOR "Gabe Vidaurri"
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -19,16 +24,13 @@
 
 /*
  * main.cpp
- * Author: Gabriel Vidaurri (wre774)
- * Date: 4/15/21
+ * Authors: Gabriel Vidaurri (wre774)
+ *          Joseph Daau (ijr855)
+ *          Christopher Urista (tgm563)
+ *          Shejan Shuza (ovv180)
+ * Date: 5/9/21
  *
- * This program focuses on the functions that allow the OpenGL program to run using GLUT functions.
- *
- * Renders the objects of the first-person scene which include a gun, floating monkey sphere, and floating cylinder.
- *
- * The default spotlight position is from the monkey sphere pointing upward at the cylinder floating above it.
- * Allows the user to change the spotlight position to come from the gun instead, in addition to toggling 
- * the spotlight on/off.
+ * Description: Defines the main() for the program and acts as controller for many core elements.
  *
  */
 
@@ -41,7 +43,6 @@ Model *cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model *gunMuzzleLight; // The gun light above the muzzle 
 /* -- Shader and Model Declarations End Here -- */
-
 
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
@@ -69,7 +70,6 @@ glm::vec4 lightPosition = glm::vec4(0.0f,3.0f,0.0f,1.0f);
 
 /* -- Camera Variable Declarations -- */
 //QuatCamera * camera; // Represents the first-person camera in this scene
-
 Camera::CameraMovement retValCamcustom = Camera::CameraMovement(); // Struct to hold our values for 1st person camera
 Camera::CameraMovement retValCamcustomFly = Camera::CameraMovement(); // Struct to hold our values for fly mode camera
 Camera customCam;
@@ -87,6 +87,7 @@ bool isSpotlightOnGun = false; // Toggle for position of the spotlight in the sc
 bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is on/off. Default on at the start.
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
+
 /* Report GL errors, if any, to stderr. */
 void checkError(const char *functionName)
 {
@@ -95,6 +96,7 @@ void checkError(const char *functionName)
 	  std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
 	}
 }
+
 
 void initShader(void)
 {
@@ -105,11 +107,13 @@ void initShader(void)
 	checkError ("initShader");
 }
 
+
 void initRendering(void)
 {
 	glClearColor (0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
 	checkError ("initRendering");
 }
+
 
 void init(void) 
 {	
@@ -133,9 +137,10 @@ void init(void)
 	retValCamcustom.eyeReturn = eye;
 	retValCamcustom.centerReturn = center;
 
-	initShader ();
-	initRendering ();
+	initShader();
+	initRendering();
 }
+
 
 /* This prints in the console when you start the program */
 void dumpInfo(void)
@@ -146,6 +151,7 @@ void dumpInfo(void)
 	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
 	checkError ("dumpInfo");
 }
+
 
 /* Renders all Walls in the Level */
 void renderWalls()
@@ -355,11 +361,13 @@ void display(void)
 	checkError ("display");
 }
 
+
 /* This gets called when nothing is happening (OFTEN) */
 void idle()
 {
 	glutPostRedisplay(); // create a display event. Display calls as fast as CPU will allow when put in the idle function
 }
+
 
 /* Called when the window is resized */
 void reshape (int w, int h)
@@ -368,11 +376,13 @@ void reshape (int w, int h)
 	checkError ("reshape");
 }
 
+
 /* Called when a special key is pressed */
 void specialKeyboard(int Key, int x, int y)
 {
     //camera->OnKeyboard(Key);
 }
+
 
 // Fly Camera calls are done here
 void SpecialKeyHandler(int key, int x, int y)
@@ -383,6 +393,7 @@ void SpecialKeyHandler(int key, int x, int y)
 		retValCamcustomFly = customCam.FlyCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
 	}
 }
+
 
 /* Called when a normal key is pressed */
 void keyboard(unsigned char key, int x, int y)
@@ -505,11 +516,13 @@ void keyboard(unsigned char key, int x, int y)
 
 }
 
+
 /* Called when the camera needs to move due to mouse movement */
 static void passiveMouse(int x, int y)
 {
    //camera->OnMouse(x, y);
 }
+
 
 int main(int argc, char** argv)
 {
