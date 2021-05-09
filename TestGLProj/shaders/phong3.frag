@@ -5,7 +5,8 @@
  * Date: 4/15/21
  *
  * Represents the fragment shader for our program.
- * Ultimately calculates the color on a surface for multiple lights.
+ * Ultimately calculates the color on a surface for multiple lights. 
+ * (Namely the spotlight from the gun and the point light at the beginning of the level.)
  *
  */
 
@@ -14,6 +15,7 @@ in vec3 L;
 in vec3 E;
 in vec3 H;
 in vec4 eyePosition;
+in vec2 texCoordsInterpolated;
 
 uniform vec4 lightPosition;
 uniform mat4 Projection;
@@ -27,6 +29,9 @@ uniform vec4 surfaceSpecular;
 uniform float shininess;
 uniform vec4 surfaceAmbient;
 uniform vec4 surfaceEmissive;
+uniform float useTexture;
+uniform sampler2D diffuseTexture;
+uniform float linearAttenuationCoefficient;
 
 // Spotlight uniform variables
 uniform float cutoffAngle; // Represents the cutoff angle of our cone for our spotlight
@@ -56,8 +61,6 @@ void main()
     vec4 diffuse  = Kd * lightDiffuse * surfaceDiffuse;
     vec4 specular = Ks * lightSpecular * surfaceSpecular;
     vec4 ambient  = Ka * lightAmbient * surfaceAmbient;
-    
-    //gl_FragColor = surfaceEmissive + ambient + (diffuse + specular);
 
     float angle; // Dot product of the V of the spotlight and the direction. Will later need it for the actual 
                  // angle which will be calculated using arccos.
@@ -91,7 +94,13 @@ void main()
     else
         spotlightEffect = 0;
 
+
+    float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
+    vec4 texColor = vec4(0.0,0.0,0.0,1.0);
+	if(useTexture > 0.0){
+		texColor = texture2D(diffuseTexture,texCoordsInterpolated);
+	}
+
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive + ambient + (diffuse + specular) + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
-    
+    gl_FragColor = surfaceEmissive + ambient + /*linearAttenuation * */(diffuse + specular) + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
 }

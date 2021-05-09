@@ -39,13 +39,14 @@
 
  /* -- Shader and Model Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
-Model *ground; // The ground
-Model *ceiling; // The ceiling
-Model *sphere; // The floating monkey sphere in the center of the scene
-Model *sphereLight;
-Model *cylinder; // The floating cylinder above the monkey sphere
-Model *gun; // The gun
-Model *gunMuzzleLight; // The gun light above the muzzle 
+Model* ground; // The ground
+Model* ceiling; // The ceiling
+Model* sphere; // The floating monkey sphere in the center of the scene
+Model* sphereLight;
+Model* cylinder; // The floating cylinder above the monkey sphere
+Model* gun; // The gun
+Model* gunMuzzleLight; // The gun light above the muzzle 
+Model* demon;
 /* -- Shader and Model Declarations End Here -- */
 
 /* -- Wall Model Declarations -- */
@@ -69,7 +70,7 @@ glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt
 
 /* -- Point Light Declarations -- */
 float rotation = 0.0f;
-glm::vec4 lightPosition = glm::vec4(0.0f,3.0f,0.0f,1.0f);
+glm::vec4 lightPosition = glm::vec4(0.0f, 3.0f, 0.0f, 1.0f);
 /* -- Point Light Declarations End Here -- */
 
 /* -- Camera Variable Declarations -- */
@@ -92,14 +93,7 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
 
-/* Report GL errors, if any, to stderr. */
-void checkError(const char *functionName)
-{
-	GLenum error;
-	while (( error = glGetError() ) != GL_NO_ERROR) {
-	  std::cerr << "GL error " << error << " detected in " << functionName << std::endl;
-	}
-}
+
 
 
 void initShader(void)
@@ -108,26 +102,26 @@ void initShader(void)
 	//shader.AddAttribute("vertexPosition");
 	//shader.AddAttribute("vertexNormal");
 
-	checkError ("initShader");
+	checkError("initShader");
 }
 
 
 void initRendering(void)
 {
-	glClearColor (0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
-	checkError ("initRendering");
+	glClearColor(0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
+	checkError("initRendering");
 }
 
 
-void init(void) 
-{	
+void init(void)
+{
 	// View looking into the screen.
 	glm::vec3 initpos = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::vec3 initlookatpnt = glm::vec3(.0f, .0f, -1.0f);
 	//camera = new QuatCamera(800,600,initpos, initlookatpnt, glm::vec3(0.0f, 1.0f, 0.0f));
-	
+
 	// Perspective projection matrix.
-	projectionMatrix = glm::perspective(45.0f, 800.0f/600.0f, 1.0f, 1000.0f);
+	projectionMatrix = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 1000.0f);
 
 	// Load identity matrix into model matrix.
 	modelMatrix = glm::mat4();
@@ -149,11 +143,11 @@ void init(void)
 /* This prints in the console when you start the program */
 void dumpInfo(void)
 {
-	printf ("Vendor: %s\n", glGetString (GL_VENDOR));
-	printf ("Renderer: %s\n", glGetString (GL_RENDERER));
-	printf ("Version: %s\n", glGetString (GL_VERSION));
-	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
-	checkError ("dumpInfo");
+	printf("Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version: %s\n", glGetString(GL_VERSION));
+	printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	checkError("dumpInfo");
 }
 
 
@@ -166,7 +160,7 @@ void renderWalls()
 	//wall1->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	//wall1->setOverrideSpecularShininessMaterial(90.0f);
 	wall1->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	
+
 	//furthest right walls, to make the outside border
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix, false);
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix, false);
@@ -254,9 +248,9 @@ void display(void)
 	//viewMatrix = glm::lookAt(camera->GetPos(), camera->GetLookAtPoint(), camera->GetUp());
 
 	rotation += 0.05f; // Update rotation angle if rotation is enabled.
-	
+
 	glm::vec4 lightPos = /*glm::rotate(rotation,0.0f, 0.0f, 1.0f) */ lightPosition;
-	
+
 
 	shader.Activate(); // Bind shader.
 	shader.SetUniform("lightPosition", viewMatrix * lightPos);
@@ -284,7 +278,7 @@ void display(void)
 		shader.SetUniform("spotlightDirection", glm::vec4(0.0, 1.0, 0.0, 1.0));
 		shader.SetUniform("cutoffAngle", 20.0f);
 	}
-	
+
 	// This section of code determines whether or not the spotlight will be on or off by changing
 	// the spotlight's diffuse and specular.
 	if (isSpotlightOn == true) // If the spotlight in the scene is on
@@ -298,7 +292,7 @@ void display(void)
 		shader.SetUniform("spotlightSpecular", glm::vec4(0.0, 0.0, 0.0, 1.0));
 	}
 	shader.SetUniform("spotlightExponent", 0.001f);
-	
+
 	headModelMatrix = modelMatrix;
 
 	/* -- Renders objects in the scene -- */
@@ -310,8 +304,8 @@ void display(void)
 	sphere->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	sphere->setOverrideSpecularShininessMaterial(90.0f);
 	sphere->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	sphere->render(viewMatrix,projectionMatrix, false); // Render sphere in the middle of the area.
-	
+	sphere->render(viewMatrix, projectionMatrix, false); // Render sphere in the middle of the area.
+
 	// Sphere Light
 	sphereLight->render(viewMatrix * glm::translate(lightPos.x, lightPos.y, lightPos.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
 	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
@@ -321,25 +315,25 @@ void display(void)
 	gun->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gun->setOverrideSpecularShininessMaterial(40.0f);
 	gun->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	gun->render(glm::translate(1.0f,-1.0f,-2.0f) * glm::scale(.05f,.05f,.05f) * glm::rotate(-90.0f,0.0f,1.0f,0.0f), projectionMatrix, false); // Render the gun
-	
+	gun->render(glm::translate(1.0f, -1.0f, -2.0f) * glm::scale(.05f, .05f, .05f) * glm::rotate(-90.0f, 0.0f, 1.0f, 0.0f), projectionMatrix, false); // Render the gun
+
 	// Floating Cylinder
-	cylinder->setOverrideDiffuseMaterial( glm::vec4(1.0, 0.0, 0.0, 1.0));
-	cylinder->setOverrideAmbientMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	cylinder->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
-	cylinder->setOverrideSpecularShininessMaterial( 90.0f);
-	cylinder->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
-	cylinder->render(viewMatrix*glm::translate(0.0f,5.0f,0.0f)*glm::rotate(180.0f,1.0f,0.0f,0.0f), projectionMatrix, useMat);
+	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0, 0.0, 0.0, 1.0));
+	cylinder->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	cylinder->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	cylinder->setOverrideSpecularShininessMaterial(90.0f);
+	cylinder->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	cylinder->render(viewMatrix * glm::translate(0.0f, 5.0f, 0.0f) * glm::rotate(180.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, useMat);
 
 	// Renders the ground.
 	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
 	// Ground
-	ground->setOverrideDiffuseMaterial(glm::vec4(1.0, 0.0, 0.0, 1.0));
-	ground->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
+	ground->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 1.0, 1.0));
+	ground->setOverrideAmbientMaterial(glm::vec4(0.3, 0.0, 0.0, 1.0));
 	//ground->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	//ground->setOverrideSpecularShininessMaterial(90.0f);
 	ground->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ground->render(viewMatrix * glm::translate(0.0f,-2.0f,0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
+	ground->render(viewMatrix * glm::translate(0.0f, -2.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
 
 	// Roof
 	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
@@ -355,11 +349,13 @@ void display(void)
 	gunMuzzleLight->setOverrideSpecularShininessMaterial(40.0f);
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
+	
+	demon->render(viewMatrix * glm::translate(15.0f, 0.0f, 0.0f), projectionMatrix, false);
 	/* -- Done rendering objects in the scene -- */
 
 	glutSwapBuffers(); // Swap the buffers.
 
-	checkError ("display");
+	checkError("display");
 }
 
 
@@ -371,17 +367,17 @@ void idle()
 
 
 /* Called when the window is resized */
-void reshape (int w, int h)
+void reshape(int w, int h)
 {
-	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-	checkError ("reshape");
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	checkError("reshape");
 }
 
 
 /* Called when a special key is pressed */
 void specialKeyboard(int Key, int x, int y)
 {
-    //camera->OnKeyboard(Key);
+	//camera->OnKeyboard(Key);
 }
 
 
@@ -420,99 +416,99 @@ void keyboard(unsigned char key, int x, int y)
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key)
 	{
-		case 27: // This is an ASCII value respresenting the ESC key
-			exit(0);
-			break;
+	case 27: // This is an ASCII value respresenting the ESC key
+		exit(0);
+		break;
 
-		case 'q': // Strafes left //DOES NOT WORK
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 'q': // Strafes left //DOES NOT WORK
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Updates the model matrix of our character to strafe to the left
-			modelMatrix = glm::translate(strafeVec) * modelMatrix;
-			break;
+		// Updates the model matrix of our character to strafe to the left
+		modelMatrix = glm::translate(strafeVec) * modelMatrix;
+		break;
 
-		case 'e': // Strafes right //DOES NOT WORK
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 'e': // Strafes right //DOES NOT WORK
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Updates the model matrix of our character to strafe to the right
-			modelMatrix = glm::translate(-strafeVec) * modelMatrix;
-			break;
+		// Updates the model matrix of our character to strafe to the right
+		modelMatrix = glm::translate(-strafeVec) * modelMatrix;
+		break;
 
-		case 'w': // Moves our character forward
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 'w': // Moves our character forward
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Updates the model matrix of our character to move forward
-			modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
+		// Updates the model matrix of our character to move forward
+		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
-			break;
+		break;
 
-		case 's': // Moves our character back
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 's': // Moves our character back
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Updates the model matrix of our character to move back
-			modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
+		// Updates the model matrix of our character to move back
+		modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
 
-			break;
+		break;
 
-		case 'a': // Rotates our character to the left
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 'a': // Rotates our character to the left
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Rotates the model matrix of our character to the left
-			modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
+		// Rotates the model matrix of our character to the left
+		modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
 
-			break;
+		break;
 
-		case 'd': // Rotates our character to the right	
-			// Sets up the values to send to our camera
-			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+	case 'd': // Rotates our character to the right	
+		// Sets up the values to send to our camera
+		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-			// Calls our custom keyboard camera
-			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		// Calls our custom keyboard camera
+		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-			// Rotates the model matrix of our character to the right
-			modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
+		// Rotates the model matrix of our character to the right
+		modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
 
-			break;
-
-
-
-		case 'f': // Zooms in (Fly camera)
-			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-			break;
-
-		case 'v': // Zooms out (Fly camera)
-			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-			break;
+		break;
 
 
 
+	case 'f': // Zooms in (Fly camera)
+		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+		break;
 
-		case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
-			if (isSpotlightOnGun == false)
-				isSpotlightOnGun = true;
-			else if (isSpotlightOnGun == true)
-				isSpotlightOnGun = false;
-			break;
+	case 'v': // Zooms out (Fly camera)
+		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+		break;
+
+
+
+
+	case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
+		if (isSpotlightOnGun == false)
+			isSpotlightOnGun = true;
+		else if (isSpotlightOnGun == true)
+			isSpotlightOnGun = false;
+		break;
 	}
 
 }
@@ -521,7 +517,7 @@ void keyboard(unsigned char key, int x, int y)
 /* Called when the camera needs to move due to mouse movement */
 static void passiveMouse(int x, int y)
 {
-   //camera->OnMouse(x, y);
+	//camera->OnMouse(x, y);
 }
 
 
@@ -529,22 +525,24 @@ static void passiveMouse(int x, int y)
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_DOUBLE| GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize (800, 600); 
-	glutInitWindowPosition (100, 100);
-	glutCreateWindow ("Simple Doom Game");
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(800, 600);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("Simple Doom Game");
 
 	glewInit();
 	dumpInfo();
 	init();
-//	glutSpecialFunc2(windowSpecial);
 	glutDisplayFunc(display); 
 	glutIdleFunc(idle); 
+
+	glutDisplayFunc(display);
+	glutIdleFunc(idle);
 	glutReshapeFunc(reshape);
-	glutKeyboardFunc (keyboard);
+	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(SpecialKeyHandler); // Calls additional function to detect special keys
-    glutPassiveMotionFunc(passiveMouse);  // Calls additional function to detect mouse movement
-	
+	glutPassiveMotionFunc(passiveMouse);  // Calls additional function to detect mouse movement
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Loads the models to use in the program.
@@ -552,17 +550,18 @@ int main(int argc, char** argv)
 	//ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	ceiling = new Model(&shader, "models/plane.obj", "models/");
 	//ceiling->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	sphere = new Model(&shader,"models/sphere.obj", "models/");
+	sphere = new Model(&shader, "models/sphere.obj", "models/");
 	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	sphereLight = new Model(&shader, "models/sphere.obj", "models/");
-	cylinder = new Model( &shader, "models/cylinder.obj", "models/");
+	cylinder = new Model(&shader, "models/cylinder.obj", "models/");
 	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
-	
+	demon = new Model(&shader, "models/cacodemon.obj", "models/");
+
 	wallModels(); // Loads all wall models in our program
 
-	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC|SND_FILENAME|SND_LOOP); // Plays the theme song from the first level of Doom
-
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
+	
 	glutMainLoop();
 
 	return 0;
