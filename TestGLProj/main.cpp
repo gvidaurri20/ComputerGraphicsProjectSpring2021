@@ -156,19 +156,15 @@ void dumpInfo(void)
 /* Renders all Walls in the Level */
 void renderWalls()
 {
-	//furthest right walls, to make the outside border
+	// Sets up wall1 things for shader
 	wall1->setOverrideDiffuseMaterial(glm::vec4(0.18, 0.09, 0.2, 1.0));
 	wall1->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	wall1->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
-	wall1->setOverrideSpecularShininessMaterial(90.0f);
+	//wall1->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//wall1->setOverrideSpecularShininessMaterial(90.0f);
 	wall1->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix, false);
 	
-	wall1->setOverrideDiffuseMaterial(glm::vec4(0.18, 0.09, 0.2, 1.0));
-	wall1->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	wall1->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
-	wall1->setOverrideSpecularShininessMaterial(90.0f);
-	wall1->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
+	//furthest right walls, to make the outside border
+	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix, false);
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix, false);
 
 	//vertical walls within the border walls. positioned from left to right 
@@ -337,8 +333,8 @@ void display(void)
 	// Ground
 	ground->setOverrideDiffuseMaterial( glm::vec4(1.0, 0.0, 0.0, 1.0));
 	ground->setOverrideAmbientMaterial(  glm::vec4(0.2 , 0.0, 0.0, 1.0));
-	ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
-	ground->setOverrideSpecularShininessMaterial( 90.0f);
+	//ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//ground->setOverrideSpecularShininessMaterial( 90.0f);
 	ground->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ground->render(viewMatrix*glm::translate(0.0f,-2.0f,0.0f)*glm::scale(100.0f,100.0f,300.0f), projectionMatrix, useMat);
 
