@@ -14,6 +14,7 @@ in vec3 L;
 in vec3 E;
 in vec3 H;
 in vec4 eyePosition;
+in vec2 texCoordsInterpolated;
 
 uniform vec4 lightPosition;
 uniform mat4 Projection;
@@ -27,6 +28,9 @@ uniform vec4 surfaceSpecular;
 uniform float shininess;
 uniform vec4 surfaceAmbient;
 uniform vec4 surfaceEmissive;
+uniform bool useTexture;
+uniform sampler2D diffuseTexture;
+uniform float linearAttenuationCoefficient;
 
 // Spotlight uniform variables
 uniform float cutoffAngle; // Represents the cutoff angle of our cone for our spotlight
@@ -52,10 +56,11 @@ void main()
     float Kd = max(dot(Normal, Light), 0.0);
     float Ks = pow(max(dot(reflect(-Light, Normal),Eye), 0.0), shininess);
     float Ka = 1.0;
-
+    float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
     vec4 diffuse  = Kd * lightDiffuse * surfaceDiffuse;
     vec4 specular = Ks * lightSpecular * surfaceSpecular;
     vec4 ambient  = Ka * lightAmbient * surfaceAmbient;
+    vec4 texColor = vec4(1.0,1.0,1.0,1.0);
     
     //gl_FragColor = surfaceEmissive + ambient + (diffuse + specular);
 
@@ -65,6 +70,9 @@ void main()
     // If the spotlight is on the gun, then we need to recalculate the V here so that way the spotlight effect 
     // is rendered per pixel, as opposed to per vertex.  Regardless, we will be calculating the angle (dot product)
     // to be used later.
+    if(useTexture){
+            texColor = texture2D(diffuseTexture,texCoordsInterpolated);
+    }
     if (isSpotlightOnGunFrag == true)
     {
         vec3 VofSpotlightNew = normalize(eyePosition.xyz - spotlightPosition.xyz);
@@ -92,6 +100,6 @@ void main()
         spotlightEffect = 0;
 
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive + ambient + (diffuse + specular) + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
+    gl_FragColor = surfaceEmissive + ambient + linearAttenuation*(diffuse + specular) + linearAttenuation*(spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight))*texColor ;
     
 }

@@ -14,9 +14,11 @@ out vec3 L;
 out vec3 E;
 out vec3 H;
 out vec4 eyePosition;
+out vec2 texCoordsInterpolated; 
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec2 vertexTextureCoordinates;
 
 uniform vec4 lightPosition;
 uniform mat4 Projection;
@@ -30,6 +32,7 @@ uniform vec4 surfaceSpecular;
 uniform float shininess;
 uniform vec4 surfaceAmbient;
 uniform vec4 surfaceEmissive;
+uniform bool useTexture; 
 
 // Spotlight uniform variables
 uniform float cutoffAngle; // Represents the cutoff angle of our cone for our spotlight
@@ -48,6 +51,9 @@ out vec3 VofSpotlight; // Viewing vertex vector of the spotlight
 
 void main()
 {
+   //if(useTexture > 0.0){
+		texCoordsInterpolated = vertexTextureCoordinates;
+	//}
     gl_Position = Projection * ModelView * vec4(vertexPosition, 1.0);
 
     eyePosition = ModelView * vec4(vertexPosition, 1.0);
