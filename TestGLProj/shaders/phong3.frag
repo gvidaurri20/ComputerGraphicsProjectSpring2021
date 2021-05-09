@@ -1,11 +1,10 @@
 #version 440 core
 /*
  * phong3.frag
- * Author: Gabriel Vidaurri (wre774)
+ * Author: Shejan Shuza (ovv180) and Gabriel Vidaurri (wre774)
  * Date: 4/15/21
  *
- * Represents the fragment shader for our program.
- * Ultimately calculates the color on a surface for multiple lights.
+ * Applies texturing from a sampler onto the Fragment section
  *
  */
 
@@ -70,7 +69,7 @@ void main()
     // If the spotlight is on the gun, then we need to recalculate the V here so that way the spotlight effect 
     // is rendered per pixel, as opposed to per vertex.  Regardless, we will be calculating the angle (dot product)
     // to be used later.
-    if(useTexture){
+    if(useTexture == true){
             texColor = texture2D(diffuseTexture,texCoordsInterpolated);
     }
     if (isSpotlightOnGunFrag == true)
@@ -98,8 +97,8 @@ void main()
         spotlightEffect = pow(max(angle, 0), spotlightExponent);
     else
         spotlightEffect = 0;
-
+        //The Texture color is added to the framebuffer at the fragment, so its just as bright as the values on the texture are, need to multiply by some factor to afflict lighting
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive + ambient + linearAttenuation* (diffuse + specular)*texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
-    
+    gl_FragColor = surfaceEmissive+ambient+linearAttenuation*(diffuse + specular)+(texColor) + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
+   // gl_FragColor=linearAttenuation* (diffuse + specular);
 }

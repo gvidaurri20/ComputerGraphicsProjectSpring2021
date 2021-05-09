@@ -338,8 +338,8 @@ void display(void)
 	// Ground
 	ground->setOverrideDiffuseMaterial( glm::vec4(1.0, 0.0, 0.0, 1.0));
 	ground->setOverrideAmbientMaterial(  glm::vec4(0.2 , 0.0, 0.0, 1.0));
-	//ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
-	//ground->setOverrideSpecularShininessMaterial( 90.0f);
+	ground->setOverrideSpecularMaterial( glm::vec4(1.0, 1.0, 1.0, 1.0));
+	ground->setOverrideSpecularShininessMaterial( 90.0f);
 	ground->setOverrideEmissiveMaterial(  glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ground->render(viewMatrix*glm::translate(0.0f,-2.0f,0.0f)*glm::scale(100.0f,100.0f,300.0f), projectionMatrix, false);
 
@@ -357,7 +357,7 @@ void display(void)
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
 	//Render Cacodemon
-	demon->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
+	demon->render(glm::translate(0.0f, 0.0f, -3.6f) * glm::scale(0.25f, 0.25f, 0.25f) * glm::rotate(00.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	/* -- Done rendering objects in the scene -- */
 
 	glutSwapBuffers(); // Swap the buffers.

@@ -1,11 +1,11 @@
 #version 440 core
 /*
  * phong3.vert
- * Author: Gabriel Vidaurri (wre774)
+ * Author: Shejan Shuza (ovv180) and Gabriel Vidaurri (wre774)
  * Date: 4/15/21
  *
  * Represents the vertex shader for our program.
- * Calculates the necessary vectors to pass to the fragment shader.
+ * Calculates the necessary vectors to pass to the fragment shader based on the vertices of the objects. 
  *
  */
 
