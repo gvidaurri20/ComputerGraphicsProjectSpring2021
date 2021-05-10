@@ -73,14 +73,6 @@ protected:
 	void updateBuffers(); //initialize your VBO and update when triangles are added
 	GLuint LoadTexture(const char* filename);
 
-
-
-
-
-
-
-
-
 };
 #endif // !1
 
