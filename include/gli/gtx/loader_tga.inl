@@ -90,10 +90,11 @@ namespace loader_tga
 		Image[0] = Mipmap;
 
 		// TGA images are saved in BGR or BGRA format.
-		if(TexelSize == 24)
+		/*if(TexelSize == 24)
 			Image.swizzle<glm::u8vec3>(glm::B, glm::G, glm::R, glm::A);
 		if(TexelSize == 32)
 			Image.swizzle<glm::u8vec4>(glm::B, glm::G, glm::R, glm::A);
+			*/
 
 		return Image;
 	}

@@ -1,10 +1,12 @@
 #version 440 core
 /*
  * phong3.frag
- * Author: Shejan Shuza (ovv180) and Gabriel Vidaurri (wre774)
+ * Author: Gabriel Vidaurri (wre774)
  * Date: 4/15/21
  *
- * Applies texturing from a sampler onto the Fragment section
+ * Represents the fragment shader for our program.
+ * Ultimately calculates the color on a surface for multiple lights. 
+ * (Namely the spotlight from the gun and the point light at the beginning of the level.)
  *
  */
 
@@ -27,7 +29,7 @@ uniform vec4 surfaceSpecular;
 uniform float shininess;
 uniform vec4 surfaceAmbient;
 uniform vec4 surfaceEmissive;
-uniform bool useTexture;
+uniform float useTexture;
 uniform sampler2D diffuseTexture;
 uniform float linearAttenuationCoefficient;
 
@@ -55,13 +57,10 @@ void main()
     float Kd = max(dot(Normal, Light), 0.0);
     float Ks = pow(max(dot(reflect(-Light, Normal),Eye), 0.0), shininess);
     float Ka = 1.0;
-    float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
+
     vec4 diffuse  = Kd * lightDiffuse * surfaceDiffuse;
     vec4 specular = Ks * lightSpecular * surfaceSpecular;
     vec4 ambient  = Ka * lightAmbient * surfaceAmbient;
-    vec4 texColor = vec4(1.0,1.0,1.0,1.0);
-    
-    //gl_FragColor = surfaceEmissive + ambient + (diffuse + specular);
 
     float angle; // Dot product of the V of the spotlight and the direction. Will later need it for the actual 
                  // angle which will be calculated using arccos.
@@ -69,9 +68,6 @@ void main()
     // If the spotlight is on the gun, then we need to recalculate the V here so that way the spotlight effect 
     // is rendered per pixel, as opposed to per vertex.  Regardless, we will be calculating the angle (dot product)
     // to be used later.
-    if(useTexture == true){
-            texColor = texture2D(diffuseTexture,texCoordsInterpolated);
-    }
     if (isSpotlightOnGunFrag == true)
     {
         vec3 VofSpotlightNew = normalize(eyePosition.xyz - spotlightPosition.xyz);
@@ -97,8 +93,14 @@ void main()
         spotlightEffect = pow(max(angle, 0), spotlightExponent);
     else
         spotlightEffect = 0;
-        //The Texture color is added to the framebuffer at the fragment, so its just as bright as the values on the texture are, need to multiply by some factor to afflict lighting
+
+
+    float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
+    vec4 texColor = vec4(0.0,0.0,0.0,1.0);
+	if(useTexture > 0.0){
+		texColor = texture2D(diffuseTexture,texCoordsInterpolated);
+	}
+
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive+ambient+linearAttenuation*(diffuse + specular)+(texColor) + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
-   // gl_FragColor=linearAttenuation* (diffuse + specular);
+    gl_FragColor = surfaceEmissive + ambient + /*linearAttenuation * */(diffuse + specular) + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
 }

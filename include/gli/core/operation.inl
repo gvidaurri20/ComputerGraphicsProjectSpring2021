@@ -9,7 +9,6 @@
 
 #include <cstring>
 #include <algorithm>
-
 namespace gli
 {
 	namespace detail

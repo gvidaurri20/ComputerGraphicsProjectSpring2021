@@ -1,11 +1,11 @@
 #version 440 core
 /*
  * phong3.vert
- * Author: Shejan Shuza (ovv180) and Gabriel Vidaurri (wre774)
+ * Author: Gabriel Vidaurri (wre774)
  * Date: 4/15/21
  *
  * Represents the vertex shader for our program.
- * Calculates the necessary vectors to pass to the fragment shader based on the vertices of the objects. 
+ * Calculates the necessary vectors to pass to the fragment shader.
  *
  */
 
@@ -14,11 +14,13 @@ out vec3 L;
 out vec3 E;
 out vec3 H;
 out vec4 eyePosition;
-out vec2 texCoordsInterpolated; 
+out vec2 texCoordsInterpolated;
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec2 vertexTextureCoordinates;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec2 vertexTextureCoordinates;
+//in vec3 vertexPosition;
+//in vec3 vertexNormal;
 
 uniform vec4 lightPosition;
 uniform mat4 Projection;
@@ -32,7 +34,7 @@ uniform vec4 surfaceSpecular;
 uniform float shininess;
 uniform vec4 surfaceAmbient;
 uniform vec4 surfaceEmissive;
-uniform bool useTexture; 
+uniform float useTexture;
 
 // Spotlight uniform variables
 uniform float cutoffAngle; // Represents the cutoff angle of our cone for our spotlight
@@ -51,7 +53,7 @@ out vec3 VofSpotlight; // Viewing vertex vector of the spotlight
 
 void main()
 {
-   //if(useTexture > 0.0){
+    //if(useTexture > 0.0){
 		texCoordsInterpolated = vertexTextureCoordinates;
 	//}
     gl_Position = Projection * ModelView * vec4(vertexPosition, 1.0);
