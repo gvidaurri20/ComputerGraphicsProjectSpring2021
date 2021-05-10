@@ -66,6 +66,7 @@ Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 //mat4 record of each wall
 glm::mat4 wallMat[32];
 glm::mat4 demonMat[11];
+bool demonBool[11];
 Model* wallModelArr[32];
 
 
@@ -73,6 +74,7 @@ Model* wallModelArr[32];
 /* -- Wall Model Declarations End Here -- */
 
 bool collisionDetection = false;
+bool collisionDemons = false;
 
 
 /* -- Matrix Declarations -- */
@@ -222,16 +224,16 @@ void dumpInfo(void)
 * True - there is a detection
 * False - no detection
 */
-bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wallMath)
+bool CheckDetection(glm::mat4 playerMatrix, BoundingBox *boxf,glm::mat4 wallMath)
 {
 	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
 
 	//take in a mat4 of each wall
 	//multiply the mins and maxes by the wall material
-	glm::vec4 minValues = glm::vec4(box->xmin, box->ymin, box->zmin, 1.0f);
+	glm::vec4 minValues = glm::vec4(boxf->xmin, boxf->ymin, boxf->zmin, 1.0f);
 	minValues = wallMath * minValues;
 
-	glm::vec4 maxValues = glm::vec4(box->xmax, box->ymax, box->zmax, 1.0f);
+	glm::vec4 maxValues = glm::vec4(boxf->xmax, boxf->ymax, boxf->zmax, 1.0f);
 	maxValues = wallMath * maxValues;
 
 	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && (playerPos.z-11) <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && (playerPos.z-9) >= minValues.z)
@@ -240,7 +242,24 @@ bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wallMath)
 	}
 	return false;
 }
+bool CheckDetectionDemon(glm::mat4 playerMatrix, BoundingBox* boxf, glm::mat4 wallMath)
+{
+	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
 
+	//take in a mat4 of each wall
+	//multiply the mins and maxes by the wall material
+	glm::vec4 minValues = glm::vec4(boxf->xmin, boxf->ymin, boxf->zmin, 1.0f);
+	minValues = wallMath * minValues;
+
+	glm::vec4 maxValues = glm::vec4(boxf->xmax, boxf->ymax, boxf->zmax, 1.0f);
+	maxValues = wallMath * maxValues;
+
+	if (playerPos.x <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
+	{
+		return true;
+	}
+	return false;
+}
 
 /* Renders all Walls in the Level */
 void renderWalls()
@@ -268,7 +287,7 @@ void renderWalls()
 	wallMat[2] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f);
 	wallModelArr[2] = wall1;
 	//vertical walls within the border walls. positioned from left to right 
-	wall1->render(viewMatrix * wallMat[2]), projectionMatrix, false);
+	wall1->render(viewMatrix * wallMat[2], projectionMatrix, false);
 	
 
 
@@ -426,57 +445,59 @@ void renderWalls()
 }
 void renderDemons()
 {
+
+	
 	//demon
 	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
 	demons2Matrix = demons2Matrix * glm::rotate(1.0f, 1.0f, angle1 -= 4.5, 0.0f);
-
+	demonMat[0] = demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f);
 	//demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 = 4.5, 0.0f);
-	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
+	//demonModel->render(viewMatrix * demonMat[0], projectionMatrix, false);
 	
 	
-	
+	demonMat[1] = glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix;
 	// room with torches 
-	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix, false);
+	//demonModel->render(viewMatrix *demonMat[1], projectionMatrix, false);
+	demonMat[2] = glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix;
+	//demonModel->render(viewMatrix *demonMat[2], projectionMatrix, false);
 	
-	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix, false);
-	
-
-	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix, false);
+	demonMat[3] = glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix;
+	//demonModel->render(viewMatrix * demonMat[3], projectionMatrix, false);
+	demonMat[4] = glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix;
+	//demonModel->render(viewMatrix * demonMat[4], projectionMatrix, false);
+	demonMat[5] = glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix;
+	//demonModel->render(viewMatrix * demonMat[5] , projectionMatrix, false);
+	demonMat[6] = glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix;
+	//demonModel->render(viewMatrix * demonMat[6], projectionMatrix, false);
+	demonMat[7] = glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix;
+	//demonModel->render(viewMatrix * demonMat[7], projectionMatrix, false);
+	demonMat[8] = glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix;
+	//demonModel->render(viewMatrix * demonMat[8], projectionMatrix, false);
 	
 
 	//bottom enemies
-	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
-	
-	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
+	demonMat[9] = glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix;
+	//demonModel->render(viewMatrix * demonMat[9], projectionMatrix, false);
+	demonMat[10] = glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix;
+	//demonModel->render(viewMatrix *demonMat[10], projectionMatrix, false);
 	
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
 	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 210.0f) * demonsMatrix, projectionMatrix, false);
-	
+	for (int n = 0; n < 11; n++) {
+		if (demonBool[n] == true) {
+			demonModel->render(viewMatrix * demonMat[n], projectionMatrix, false);
+		}
+		
+	}
 	if (boundboxbool) {
-		demonBox[0]->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
-		demonBox[1]->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix);
-		demonBox[2]->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix);
-		demonBox[3]->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
-		demonBox[4]->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
-		demonBox[5]->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
-		demonBox[6]->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
-		demonBox[7]->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix);
-		demonBox[8]->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix);
-		demonBox[9]->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
-		demonBox[10]->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
-		obamidBox->render(viewMatrix * glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix);
+		for (int n = 0; n < 11; n++) {
+			if (demonBool[n] == true) {
+				demonBox[n]->render(viewMatrix * demonMat[n], projectionMatrix);
+			}
+		}
+		obamidBox->render(viewMatrix * glm::translate(-14.0f, 0.0f, 210.0f) * demonsMatrix, projectionMatrix);
 		/*if(dist < 2.0){ // collision detection for 2 unit spheres
 			shader.SetUniform("surfaceEmissive", glm::vec4(1.0, 0.0, 1.0,1.0));
 			glm::vec3 n = normalize(positionA-positionB);
@@ -800,7 +821,7 @@ void keyboard(unsigned char key, int x, int y)
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
+			collisionDetection = CheckDetection(modelMatrix, box,wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -818,6 +839,17 @@ void keyboard(unsigned char key, int x, int y)
 			modelMatrix = prevModelMatrix;
 		}
 
+		for (int n = 0; n < 11; n++) {
+			if (demonBool[n] == true) {
+				if (CheckDetection(modelMatrix, demonBox[n], demonMat[n]) == true) {
+					demonBool[n] = false;
+					cacodemonsLeft--;
+				}
+			}
+
+		}
+		
+		
 
 
 
@@ -841,7 +873,7 @@ void keyboard(unsigned char key, int x, int y)
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
+			collisionDetection = CheckDetection(modelMatrix, box,wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -859,7 +891,15 @@ void keyboard(unsigned char key, int x, int y)
 		{
 			modelMatrix = prevModelMatrix;
 		}
-
+		for (int n = 0; n < 11; n++) {
+			if (demonBool[n] == true) {
+				if (CheckDetection(modelMatrix, demonBox[n], demonMat[n]) == true) {
+					demonBool[n] = false;
+					cacodemonsLeft--;
+				}
+			}
+			
+		}
 		break;
 
 	case 'a': // Rotates our character to the left
@@ -954,6 +994,9 @@ int main(int argc, char** argv)
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	torch = new Model(&shader, "models/torch.obj", "models/");
+	for (int n = 0; n < 11; n++) {
+		demonBool[n] = true;
+	}
 	demonBox[0] = new BoundingBox(&green, demonModel,1);
 	demonBox[1] = new BoundingBox(&green, demonModel,2);
 	demonBox[2] = new BoundingBox(&green, demonModel,3);
