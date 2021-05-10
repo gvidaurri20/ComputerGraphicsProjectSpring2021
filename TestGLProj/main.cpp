@@ -885,7 +885,7 @@ int main(int argc, char** argv)
 	ground = new Model(&shader, "models/plane.obj", "models/");
 	//ground->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	ceiling = new Model(&shader, "models/plane.obj", "models/");
-	//ceiling->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ceiling->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	sphere = new Model(&shader, "models/sphere.obj", "models/");
 	sphere->setOverrideDiffuseMaterial(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	sphereLight = new Model(&shader, "models/sphere.obj", "models/");
@@ -898,7 +898,7 @@ int main(int argc, char** argv)
 	torch = new Model(&shader, "models/torch.obj", "models/");
 	wallModels(); // Loads all wall models in our program
 
-	//PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
 	
 
 	glutMainLoop();
