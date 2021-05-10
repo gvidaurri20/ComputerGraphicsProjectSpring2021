@@ -54,7 +54,7 @@ Model* torch;
 /* -- Enemy model Declarations -- */
 Model* demonModel;
 Model* obamidModel;
-BoundingBox* box;
+BoundingBox* box, * obamidBox, * demonBox;
 /* -- Enemy model Declarations End Here -- */
 float angle2, angle1;
 /* -- Wall Model Declarations -- */
@@ -120,6 +120,7 @@ bool isFirstPersonCamera = true; // Bool for camera being first person or not
 /* -- Boolean Toggle Variables Declarations -- */
 bool isSpotlightOnGun = false; // Toggle for position of the spotlight in the scene. True = on gun. False = on monkey sphere pointing up.
 bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is on/off. Default on at the start.
+bool boundboxbool=false;
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
 /*Bounding box declaration*/
@@ -418,7 +419,11 @@ void renderWalls()
 	wallMat[31] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
 	wallModelArr[31] = wall1;
 
-	
+	if (boundboxbool) {
+		for (int n = 0; n < 32; n++) {
+			box->render(viewMatrix * wallMat[n], projectionMatrix);
+		}
+	}
 }
 void renderDemons()
 {
@@ -429,25 +434,52 @@ void renderDemons()
 	//demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 = 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
+	
+	
 	// room with torches 
 	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix, false);
+	
 
 	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix, false);
+	
 
 	//bottom enemies
 	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
+	
 	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
+	
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
 	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix, false);
+	
+	if (boundboxbool) {
+		demonBox->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
+		demonBox->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
+		obamidBox->render(viewMatrix * glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix);
 
+	}
 
 }
 
@@ -623,9 +655,8 @@ void display(void)
 	renderWalls();
 	// Render the enemies
 	renderDemons();
-	for (int n = 0; n < 32; n++) {
-		box->render(viewMatrix * wallMat[n], projectionMatrix);
-	}
+	
+	
 	// Gun Muzzle Light
 	gunMuzzleLight->setOverrideDiffuseMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	gunMuzzleLight->setOverrideSpecularShininessMaterial(40.0f);
@@ -702,7 +733,9 @@ void keyboard(unsigned char key, int x, int y)
 	case 27: // This is an ASCII value respresenting the ESC key
 		exit(0);
 		break;
-
+	case 'b':
+		boundboxbool = !boundboxbool;
+		break;
 	case 'q': // Strafes left //DOES NOT WORK
 		// Sets up the values to send to our camera
 		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
@@ -907,6 +940,9 @@ int main(int argc, char** argv)
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	torch = new Model(&shader, "models/torch.obj", "models/");
+	demonBox = new BoundingBox(&green, demonModel);
+	obamidBox = new BoundingBox(&green, obamidModel);
+
 	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
 
