@@ -841,7 +841,7 @@ void keyboard(unsigned char key, int x, int y)
 		prevModelMatrix = modelMatrix;
 
 		collisionDetection = false;
-
+		modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
@@ -926,7 +926,7 @@ static void passiveMouse(int x, int y)
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH|GLUT_MULTISAMPLE);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH| GLUT_MULTISAMPLE);
 	glutSetOption(GLUT_MULTISAMPLE, 4);
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(100, 100);
