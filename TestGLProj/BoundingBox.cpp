@@ -32,7 +32,7 @@ BoundingBox::BoundingBox(Shader* shader, Model* model):Model(shader){
 	/*if (!FindBoundaries()) {
 		std::cerr << "Unable to find the boundaries of box" << std::endl;
 	}*/
-	updateBuffers();
+	//updateBuffers();
 }
 void BoundingBox::checkError(const char* functionName)
 {
