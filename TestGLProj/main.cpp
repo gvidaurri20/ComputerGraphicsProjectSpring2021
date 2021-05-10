@@ -2,7 +2,6 @@
 #define GROUP_NUM "Group 42"
 #define LAST_EDIT_DATE "5/9/21 2:52AM"
 #define LAST_EDITOR "Gabe Vidaurri"
-#define _CRT_SECURE_NO_WARNINGS
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -14,15 +13,15 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp> // Needed to debug glm things in output window
+
 #include "Model.h"
 #include "Shader.h"
 #include "QuatCamera.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include<fstream>
-#include<iostream>
-#include<stdlib.h>
+
 #include <windows.h> // Needed to play music
 #include <mmsystem.h> // Needed to play music
 
@@ -47,12 +46,13 @@ Model* sphereLight;
 Model* cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
+Model* demon;
+/* -- Shader and Model Declarations End Here -- */
+/* -- Enemy model Declarations -- */
 Model* demonModel;
 Model* obamidModel;
-float angle2 = 0;
-
-/* -- Shader and Model Declarations End Here -- */
-
+/* -- Enemy model Declarations End Here -- */
+float angle2;
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 * wall8, * wall9, * wall10, * wall11, * wall12, * wall13, * wall14,
@@ -65,16 +65,16 @@ glm::mat4 viewMatrix; // Where the camera is looking
 glm::mat4 modelMatrix; // Where the overall model is located with respect to the camera
 
 glm::mat4 headModelMatrix; // Model matrix representing the head's position
-//used for the rotation of our objects
-glm::mat4 demonsMatrix, demons2Matrix;
-glm::mat4 obamid;
-
 
 glm::mat4 sphereTransMatrix; // Where the sphere model is located wrt the camera
 glm::mat4 cubeTransMatrix; // Where the cube model is located wrt the camera
 glm::mat4 cylinderTransMatrix; // Where the cylinder model is located wrt the camera
 glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt the camera
 /* -- Matrix Declarations End Here -- */
+/*-- used for the rotation of our objects -- */
+glm::mat4 demonsMatrix, demons2Matrix;
+glm::mat4 obamid;
+/*--used for the rotation of our objects --*/
 
 /* -- Point Light Declarations -- */
 float rotation = 0.0f;
@@ -103,11 +103,14 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 
 
 
+
+
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong3.vert", "shaders/phong3.frag");
 	//shader.AddAttribute("vertexPosition");
 	//shader.AddAttribute("vertexNormal");
+
 	checkError("initShader");
 }
 
@@ -121,11 +124,6 @@ void initRendering(void)
 
 void init(void)
 {
-
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glMatrixMode(GLUT_SINGLE | GLUT_RGB);
-	glLoadIdentity();
-	glOrtho(-90, 100.0, -15.0, 100.0, 0.0, 1.0);
 	// View looking into the screen.
 	glm::vec3 initpos = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::vec3 initlookatpnt = glm::vec3(.0f, .0f, -1.0f);
@@ -149,7 +147,6 @@ void init(void)
 	initShader();
 	initRendering();
 }
-
 
 
 /* This prints in the console when you start the program */
@@ -217,18 +214,16 @@ void renderWalls()
 }
 void renderDemons()
 {
-
 	//demon
 	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
 
 	//obamid
-	obamid= obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	obamidModel->render(viewMatrix * obamid *  glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	obamidModel->render(viewMatrix * obamid * glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
 
 
 }
-
 
 /* Loads all Wall models in the Level */
 void wallModels()
@@ -255,14 +250,10 @@ void wallModels()
 }
 
 
-
 /* This gets called when the OpenGL is asked to display. This is where all the main rendering calls go. */
 void display(void)
 {
 	//camera->OnRender();
-
-	glFlush();
-	glutPostRedisplay();
 
 	/* The transformation heirarchy is cylinder -> sphere -> cube */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clears the framebuffer data from the last frame
@@ -383,6 +374,8 @@ void display(void)
 
 	// Render all the Walls
 	renderWalls();
+	// Render the enemies
+	renderDemons();
 
 	// Gun Muzzle Light
 	gunMuzzleLight->setOverrideDiffuseMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
@@ -390,18 +383,11 @@ void display(void)
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
-	
-	renderDemons();
-
-
 	/* -- Done rendering objects in the scene -- */
-
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
 }
-
-
 
 
 /* This gets called when nothing is happening (OFTEN) */
@@ -563,7 +549,6 @@ static void passiveMouse(int x, int y)
 }
 
 
-
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -575,8 +560,6 @@ int main(int argc, char** argv)
 	glewInit();
 	dumpInfo();
 	init();
-	glutDisplayFunc(display); 
-	glutIdleFunc(idle); 
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
@@ -600,8 +583,6 @@ int main(int argc, char** argv)
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
 	demonModel = new Model(&shader, "models/cacodemon.obj", "models/");
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
-
-
 	wallModels(); // Loads all wall models in our program
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
