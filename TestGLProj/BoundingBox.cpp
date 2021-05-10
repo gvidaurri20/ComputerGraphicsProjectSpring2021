@@ -1,5 +1,8 @@
 #include "BoundingBox.h"
 
+float xmax, xmin, ymax, ymin, zmax, zmin;
+
+
 BoundingBox::BoundingBox(Shader* shader, Model* model):Model(shader){
 	BoundingBox::m_shader = shader;
 	inmodel = model;
@@ -92,13 +95,19 @@ bool BoundingBox::FindBoundaries() {
 				zmin = curz;
 			}
 		}
-		printf("x%f x%f y%f y%f z%f z%f\n", xmin, xmax, ymin, ymax, zmin, zmax);
+
+
+
+		//printf("x%f x%f y%f y%f z%f z%f\n", xmin, xmax, ymin, ymax, zmin, zmax);
 		return true;
 	}
 	catch (...) {
 		return false;
 	}
 }
+
+
+
 
 void BoundingBox::updateBuffers() {
 	if (!FindBoundaries()) {

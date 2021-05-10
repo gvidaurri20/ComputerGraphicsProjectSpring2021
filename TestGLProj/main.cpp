@@ -17,6 +17,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "QuatCamera.h"
+#include "BoundingBox.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -57,11 +58,11 @@ Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 
 //mat4 record of each wall
 glm::mat4 wallMat[32];
+Model* wallModelArr[32];
 
 
 
 /* -- Wall Model Declarations End Here -- */
-
 
 bool collisionDetection = false;
 
@@ -107,8 +108,7 @@ bool isSpotlightOnGun = false; // Toggle for position of the spotlight in the sc
 bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is on/off. Default on at the start.
 /* -- Boolean Toggle Variables Declarations End Here -- */
 
-
-
+/*Bounding box declaration*/
 
 
 void initShader(void)
@@ -179,9 +179,10 @@ void dumpInfo(void)
 * True - there is a detection
 * False - no detection
 */
-bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wall, glm::vec3 moveDir)
+bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 {
 	//player and wall position
+	/*
 	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
 	glm::vec3 WallPos = glm::vec3(wall[3].x, wall[3].y, wall[3].z);
 
@@ -196,6 +197,29 @@ bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wall, glm::vec3 moveDir)
 	{
 		return true;
 	}
+	*/
+
+	//get our bounding box and find its boundaries
+	BoundingBox box = BoundingBox::BoundingBox(&shader, wall);
+	box.FindBoundaries();
+
+	//player position
+	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
+
+	//take in a mat4 of each wall
+	//multiply the mins and maxes by the wall material
+	glm::vec4 minValues = glm::vec4(box.xmin, box.ymin, box.zmin, 1.0f);
+	minValues = wallMath * minValues;
+
+	glm::vec4 maxValues = glm::vec4(box.xmax, box.ymax, box.zmax, 1.0f);
+	maxValues = wallMath * maxValues;
+
+	if (playerPos.x <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
+	{
+		return true;
+	}
+
+
 
 
 	return false;
@@ -220,128 +244,166 @@ void renderWalls()
 
 	//wall1 material 
 	wallMat[0] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f);
-
+	wallModelArr[0] = wall1;
 
 
 	//wall2 material and render
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix, false);
 	wallMat[1] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f);
+	wallModelArr[1] = wall1;
+
 
 	//vertical walls within the border walls. positioned from left to right 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[2] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f);
+	wallModelArr[2] = wall1;
+
 
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[3] =  glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f);
+	wallModelArr[3] = wall1;
+
 
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[4] =  glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f);
+	wallModelArr[4] = wall1;
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[5] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f);
+	wallModelArr[5] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[6] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f);
+	wallModelArr[6] = wall1;
+
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[7] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f);
+	wallModelArr[7] = wall1;
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[8] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f);
+	wallModelArr[8] = wall1;
+
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[9] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f);
+	wallModelArr[9] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[10] =  glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f);
+	wallModelArr[10] = wall1;
+
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(30.0f, 0.2f, 1.0f), projectionMatrix, false);
 	wallMat[11] =  glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(30.0f, 0.2f, 1.0f);
+	wallModelArr[11] = wall1;
+
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(-30.0f, 0.2f, 1.0f), projectionMatrix, false);
 	wallMat[12] =  glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(-30.0f, 0.2f, 1.0f);
+	wallModelArr[12] = wall1;
+
 
 	//horizontal walls within the border border 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.2f, 10.5f), projectionMatrix, false);
 	wallMat[13] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.2f, 10.5f);
+	wallModelArr[13] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f), projectionMatrix, false);
 	wallMat[14] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f);
+	wallModelArr[14] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f), projectionMatrix, false);
 	wallMat[15] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f);
+	wallModelArr[15] = wall1;
+
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -40.5f), projectionMatrix, false);
 	wallMat[16] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -40.5f);
+	wallModelArr[16] = wall1;
+
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, 40.5f), projectionMatrix, false);
 	wallMat[17] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, 40.5f);
+	wallModelArr[17] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, 10.5f), projectionMatrix, false);
 	wallMat[18] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, 10.5f);
+	wallModelArr[18] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f), projectionMatrix, false);
 	wallMat[19] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f);
+	wallModelArr[19] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.3f, -10.5f), projectionMatrix, false);
 	wallMat[20] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.3f, -10.5f);
+	wallModelArr[20] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(1.3f, 0.3f, -10.5f), projectionMatrix, false);
 	wallMat[21] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(1.3f, 0.3f, -10.5f);
+	wallModelArr[21] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, -10.5f), projectionMatrix, false);
 	wallMat[22] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, -10.5f);
+	wallModelArr[22] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f), projectionMatrix, false);
 	wallMat[23] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
+	wallModelArr[23] = wall1;
 
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f), projectionMatrix, false);
 	wallMat[24] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
-
+	wallModelArr[24] = wall1;
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f), projectionMatrix, false);
 	wallMat[25] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f);
-
+	wallModelArr[25] = wall1;
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-2.3f, 0.3f, 20.5f), projectionMatrix, false);
 	wallMat[26] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-2.3f, 0.3f, 20.5f);
-
+	wallModelArr[26] = wall1;
 
 	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(2.3f, 0.3f, 20.5f), projectionMatrix, false);
 	wallMat[27] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(2.3f, 0.3f, 20.5f);
-
+	wallModelArr[27] = wall1;
 
 	//horizontal walls to make top and bottom border 
 	wall1->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f), projectionMatrix, false);
 	wallMat[28] =  glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f);
-
+	wallModelArr[28] = wall1;
 
 	wall1->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f), projectionMatrix, false);
 	wallMat[29] =  glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f);
-
+	wallModelArr[29] = wall1;
 
 	//furthest left walls, makes the outside border
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f), projectionMatrix, false);
 	wallMat[30] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f);
-
+	wallModelArr[30] = wall1;
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix, false);
 	wallMat[31] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
-
+	wallModelArr[31] = wall1;
 }
 
 
@@ -603,20 +665,20 @@ void keyboard(unsigned char key, int x, int y)
 		
 		collisionDetection = false;
 
-		lookatdirH = glm::normalize(retValCamcustom.centerReturn - retValCamcustom.eyeReturn);
 
 
-		printf("Previous ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
+
+		//printf("Previous ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
 
 
 		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
-		printf("New ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
+		//printf("New ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
 
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i], lookatdirH);
+			collisionDetection = CheckDetection(modelMatrix, wallModelArr[i], wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -652,14 +714,12 @@ void keyboard(unsigned char key, int x, int y)
 
 		collisionDetection = false;
 
-		lookatdirH = glm::normalize(retValCamcustom.centerReturn - retValCamcustom.eyeReturn);
-
 		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i], lookatdirH);
+			collisionDetection = CheckDetection(modelMatrix, wallModelArr[i], wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -773,6 +833,7 @@ int main(int argc, char** argv)
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
 	
+
 	glutMainLoop();
 
 	return 0;
