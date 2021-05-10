@@ -125,6 +125,28 @@ bool boundboxbool=false;
 
 /*Bounding box declaration*/
 
+int cacodemonsLeft = 11; // Amount of cacodemons left on our map to kill
+
+// Function that allows you to draw text onto the screen
+void drawText(const char* text, int length, int x, int y) {
+	glMatrixMode(GL_PROJECTION);
+	double* matrix = new double[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+	glLoadIdentity();
+	glOrtho(0, glutGet(GLUT_WINDOW_WIDTH), 0, glutGet(GLUT_WINDOW_HEIGHT), -5, 5);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+	glLoadIdentity();
+	glRasterPos2i(x, y);
+	for (int i = 0; i < length; i++) {
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
+	}
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(matrix);
+	glMatrixMode(GL_MODELVIEW);
+}
 
 void initShader(void)
 {
@@ -666,6 +688,13 @@ void display(void)
 
 	/* -- Done rendering objects in the scene -- */
 	
+	// Draws the text at the top-left of the screen.
+	std::string text;
+	text = "Cacodemons Left On Map: " + std::to_string(cacodemonsLeft);
+	//glColor3f(0, 1, 0); // Alter the text color with this
+	drawText(text.data(), text.size(), 0, glutGet(GLUT_WINDOW_HEIGHT) - 20);
+
+
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
