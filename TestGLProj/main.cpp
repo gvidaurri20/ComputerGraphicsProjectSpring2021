@@ -49,7 +49,11 @@ Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
 Model* demon;
 /* -- Shader and Model Declarations End Here -- */
-
+/* -- Enemy model Declarations -- */
+Model* demonModel;
+Model* obamidModel;
+/* -- Enemy model Declarations End Here -- */
+float angle2;
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 * wall8, * wall9, * wall10, * wall11, * wall12, * wall13, * wall14,
@@ -81,6 +85,10 @@ glm::mat4 cubeTransMatrix; // Where the cube model is located wrt the camera
 glm::mat4 cylinderTransMatrix; // Where the cylinder model is located wrt the camera
 glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt the camera
 /* -- Matrix Declarations End Here -- */
+/*-- used for the rotation of our objects -- */
+glm::mat4 demonsMatrix, demons2Matrix;
+glm::mat4 obamid;
+/*--used for the rotation of our objects --*/
 
 /* -- Point Light Declarations -- */
 float rotation = 0.0f;
@@ -405,7 +413,18 @@ void renderWalls()
 	wallMat[31] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
 	wallModelArr[31] = wall1;
 }
+void renderDemons()
+{
+	//demon
+	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
 
+	//obamid
+	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	obamidModel->render(viewMatrix * obamid * glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+
+
+}
 
 /* Loads all Wall models in the Level */
 void wallModels()
@@ -548,6 +567,8 @@ void display(void)
 
 	// Render all the Walls
 	renderWalls();
+	// Render the enemies
+	renderDemons();
 
 
 
@@ -558,9 +579,7 @@ void display(void)
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
-	demon->render(viewMatrix * glm::translate(15.0f, 0.0f, 0.0f), projectionMatrix, false);
 	/* -- Done rendering objects in the scene -- */
-
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
@@ -827,8 +846,8 @@ int main(int argc, char** argv)
 	cylinder = new Model(&shader, "models/cylinder.obj", "models/");
 	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
-	demon = new Model(&shader, "models/cacodemon.obj", "models/");
-
+	demonModel = new Model(&shader, "models/cacodemon.obj", "models/");
+	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	wallModels(); // Loads all wall models in our program
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
