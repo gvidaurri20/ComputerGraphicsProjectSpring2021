@@ -2,6 +2,7 @@
 #define GROUP_NUM "Group 42"
 #define LAST_EDIT_DATE "5/9/21 2:52AM"
 #define LAST_EDITOR "Gabe Vidaurri"
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -13,15 +14,15 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp> // Needed to debug glm things in output window
-
 #include "Model.h"
 #include "Shader.h"
 #include "QuatCamera.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include<fstream>
+#include<iostream>
+#include<stdlib.h>
 #include <windows.h> // Needed to play music
 #include <mmsystem.h> // Needed to play music
 
@@ -47,6 +48,8 @@ Model* cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
 Model* demon;
+float angle2 = 0;
+
 /* -- Shader and Model Declarations End Here -- */
 
 /* -- Wall Model Declarations -- */
@@ -61,6 +64,7 @@ glm::mat4 viewMatrix; // Where the camera is looking
 glm::mat4 modelMatrix; // Where the overall model is located with respect to the camera
 
 glm::mat4 headModelMatrix; // Model matrix representing the head's position
+glm::mat4 demons;
 
 glm::mat4 sphereTransMatrix; // Where the sphere model is located wrt the camera
 glm::mat4 cubeTransMatrix; // Where the cube model is located wrt the camera
@@ -94,14 +98,11 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 
 
 
-
-
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong3.vert", "shaders/phong3.frag");
 	//shader.AddAttribute("vertexPosition");
 	//shader.AddAttribute("vertexNormal");
-
 	checkError("initShader");
 }
 
@@ -115,6 +116,11 @@ void initRendering(void)
 
 void init(void)
 {
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glMatrixMode(GLUT_SINGLE | GLUT_RGB);
+	glLoadIdentity();
+	glOrtho(-90, 100.0, -15.0, 100.0, 0.0, 1.0);
 	// View looking into the screen.
 	glm::vec3 initpos = glm::vec3(0.0f, 0.0f, -10.0f);
 	glm::vec3 initlookatpnt = glm::vec3(.0f, .0f, -1.0f);
@@ -138,6 +144,7 @@ void init(void)
 	initShader();
 	initRendering();
 }
+
 
 
 /* This prints in the console when you start the program */
@@ -203,6 +210,13 @@ void renderWalls()
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f), projectionMatrix, false);
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix, false);
 }
+void renderDemons()
+{
+	demons = demons * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	demon->render(viewMatrix * demons * glm::translate(0.0f, 0.0f, 0.0f), projectionMatrix, false);
+	demon->render(viewMatrix * glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+
+}
 
 
 /* Loads all Wall models in the Level */
@@ -230,10 +244,14 @@ void wallModels()
 }
 
 
+
 /* This gets called when the OpenGL is asked to display. This is where all the main rendering calls go. */
 void display(void)
 {
 	//camera->OnRender();
+
+	glFlush();
+	glutPostRedisplay();
 
 	/* The transformation heirarchy is cylinder -> sphere -> cube */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clears the framebuffer data from the last frame
@@ -350,13 +368,18 @@ void display(void)
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
-	demon->render(viewMatrix * glm::translate(15.0f, 0.0f, 0.0f), projectionMatrix, false);
+	
+	renderDemons();
+
+
 	/* -- Done rendering objects in the scene -- */
 
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
 }
+
+
 
 
 /* This gets called when nothing is happening (OFTEN) */
