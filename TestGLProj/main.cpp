@@ -47,7 +47,8 @@ Model* sphereLight;
 Model* cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
-Model* demon;
+Model* demonModel;
+Model* obamidModel;
 float angle2 = 0;
 
 /* -- Shader and Model Declarations End Here -- */
@@ -64,7 +65,10 @@ glm::mat4 viewMatrix; // Where the camera is looking
 glm::mat4 modelMatrix; // Where the overall model is located with respect to the camera
 
 glm::mat4 headModelMatrix; // Model matrix representing the head's position
-glm::mat4 demons;
+//used for the rotation of our objects
+glm::mat4 demonsMatrix, demons2Matrix;
+glm::mat4 obamid;
+
 
 glm::mat4 sphereTransMatrix; // Where the sphere model is located wrt the camera
 glm::mat4 cubeTransMatrix; // Where the cube model is located wrt the camera
@@ -213,9 +217,15 @@ void renderWalls()
 }
 void renderDemons()
 {
-	demons = demons * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	demon->render(viewMatrix * demons * glm::translate(0.0f, 0.0f, 0.0f), projectionMatrix, false);
-	demon->render(viewMatrix * glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+
+	//demon
+	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
+
+	//obamid
+	obamid= obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	obamidModel->render(viewMatrix * obamid *  glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+
 
 }
 
@@ -588,7 +598,8 @@ int main(int argc, char** argv)
 	cylinder = new Model(&shader, "models/cylinder.obj", "models/");
 	gun = new Model(&shader, "models/m16_1.obj", "models/");
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
-	demon = new Model(&shader, "models/cacodemon.obj", "models/");
+	demonModel = new Model(&shader, "models/cacodemon.obj", "models/");
+	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 
 
 	wallModels(); // Loads all wall models in our program
