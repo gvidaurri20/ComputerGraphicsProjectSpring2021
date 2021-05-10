@@ -54,7 +54,7 @@ Model* torch;
 Model* demonModel;
 Model* obamidModel;
 /* -- Enemy model Declarations End Here -- */
-float angle2;
+float angle2, angle1;
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 * wall8, * wall9, * wall10, * wall11, * wall12, * wall13, * wall14,
@@ -230,10 +230,6 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	{
 		return true;
 	}
-
-
-
-
 	return false;
 }
 
@@ -421,24 +417,29 @@ void renderDemons()
 {
 	//demon
 	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
+	demons2Matrix = demons2Matrix * glm::rotate(1.0f, 1.0f, angle1 -= 4.5, 0.0f);
+
+	//demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 = 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
-	// room with torch 
-	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f), projectionMatrix, false);
+	
+	// room with torches 
+	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix, false);
+
+	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix, false);
 
 	//bottom enemies
-	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f), projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f), projectionMatrix, false);
+	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix, false);
 
 
 }
@@ -607,7 +608,7 @@ void display(void)
 	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ceiling->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
 	ceiling->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
+	//ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
 
 
 	// Render all the Walls
