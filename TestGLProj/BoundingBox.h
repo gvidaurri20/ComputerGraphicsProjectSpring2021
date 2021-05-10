@@ -3,13 +3,14 @@
 #include "Model.h"
 class BoundingBox : public Model{
 public:
-	BoundingBox(Shader* shader, Model* model);
+	BoundingBox(Shader* shader, Model* model, int itemid);
 	void updateBuffers();
 	void render(glm::mat4 ModelView, glm::mat4 Projection);
 	bool FindBoundaries();
 	void checkError(const char* functionName);
 	friend class Model;
 	float xmin, xmax, ymin, ymax, zmin, zmax;
+	int id;
 protected:
 	Model* inmodel;
 	//float arrx[2], arry[2], arrz[2];

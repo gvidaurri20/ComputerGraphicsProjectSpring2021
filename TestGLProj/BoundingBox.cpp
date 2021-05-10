@@ -3,9 +3,10 @@
 float xmax, xmin, ymax, ymin, zmax, zmin;
 
 
-BoundingBox::BoundingBox(Shader* shader, Model* model):Model(shader){
+BoundingBox::BoundingBox(Shader* shader, Model* model,int itemid):Model(shader){
 	BoundingBox::m_shader = shader;
 	inmodel = model;
+	id = itemid;
 	
 	xmax = std::numeric_limits<float>::min();
 	//std::cout << std::numeric_limits<float>::min() << std::endl;

@@ -199,7 +199,7 @@ void dumpInfo(void)
 * True - there is a detection
 * False - no detection
 */
-bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
+bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wallMath)
 {
 	//player and wall position
 	/*
@@ -481,7 +481,15 @@ void renderDemons()
 		demonBox->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
 		demonBox->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
 		obamidBox->render(viewMatrix * glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix);
-
+		/*if(dist < 2.0){ // collision detection for 2 unit spheres
+			shader.SetUniform("surfaceEmissive", glm::vec4(1.0, 0.0, 1.0,1.0));
+			glm::vec3 n = normalize(positionA-positionB);
+			glm::vec3 vAB = velocityA - velocityB;
+			float j =  glm::dot((-1.0f)*(1.0f+e)*vAB,n) / glm::dot(n,n*(1.0f/massA + 1.0f/massB));
+			velocityA= velocityA + n*(j/massA);
+			velocityB= velocityB-n*(j/massB);
+			
+		}*/
 	}
 
 }
@@ -508,7 +516,7 @@ void wallModels()
 	wall17 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall18 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall19 = new Model(&shader, "models/unitcube.obj", "models/");
-	box = new BoundingBox(&green, wall1);
+	box = new BoundingBox(&green, wall1,0);
 }
 
 
@@ -789,7 +797,7 @@ void keyboard(unsigned char key, int x, int y)
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallModelArr[i], wallMat[i]);
+			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -830,7 +838,7 @@ void keyboard(unsigned char key, int x, int y)
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
 		{
-			collisionDetection = CheckDetection(modelMatrix, wallModelArr[i], wallMat[i]);
+			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
 
 			if (collisionDetection)
 			{
@@ -943,8 +951,8 @@ int main(int argc, char** argv)
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	torch = new Model(&shader, "models/torch.obj", "models/");
-	demonBox = new BoundingBox(&green, demonModel);
-	obamidBox = new BoundingBox(&green, obamidModel);
+	demonBox = new BoundingBox(&green, demonModel,1);
+	obamidBox = new BoundingBox(&green, obamidModel,2);
 
 	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
