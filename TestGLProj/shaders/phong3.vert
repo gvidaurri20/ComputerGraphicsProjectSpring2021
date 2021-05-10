@@ -10,9 +10,9 @@
  */
 
 out vec3 N;
-out vec3 L[2];
+out vec3 L;
 out vec3 E;
-out vec3 H[2];
+out vec3 H;
 out vec4 eyePosition;
 out vec2 texCoordsInterpolated;
 
@@ -22,15 +22,13 @@ layout(location = 2) in vec2 vertexTextureCoordinates;
 //in vec3 vertexPosition;
 //in vec3 vertexNormal;
 
-uniform vec4 lightPosition[2];
+uniform vec4 lightPosition;
 uniform mat4 Projection;
 uniform mat4 ModelView;
 
-uniform int howManyLights;
-
-uniform vec4 lightDiffuse[2];
-uniform vec4 lightSpecular[2]; 
-uniform vec4 lightAmbient[2];
+uniform vec4 lightDiffuse;
+uniform vec4 lightSpecular; 
+uniform vec4 lightAmbient;
 uniform vec4 surfaceDiffuse;
 uniform vec4 surfaceSpecular;
 uniform float shininess;
@@ -62,16 +60,12 @@ void main()
 
     eyePosition = ModelView * vec4(vertexPosition, 1.0);
 
-    vec4 eyeLightPos[2];
-    eyeLightPos[0] = lightPosition[0];
-    eyeLightPos[1] = lightPosition[1];
+    vec4 eyeLightPos = lightPosition;
 	
 	N = normalize(ModelView * vec4(vertexNormal,0.0)).xyz;
-    L[0] = normalize(eyeLightPos[0].xyz - eyePosition.xyz);
-    L[1] = normalize(eyeLightPos[1].xyz - eyePosition.xyz);
+    L = normalize(eyeLightPos.xyz - eyePosition.xyz);
     E = -normalize(eyePosition.xyz);
-    H[0] = normalize(L[0] + E);
-    H[1] = normalize(L[1] + E);
+    H = normalize(L + E);
 
 
     // If the spotlight is on the gun, then we only need to calculate the L and H of the spotlight given the 
