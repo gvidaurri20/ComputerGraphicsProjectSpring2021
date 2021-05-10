@@ -125,6 +125,28 @@ bool boundboxbool=false;
 
 /*Bounding box declaration*/
 
+int cacodemonsLeft = 11; // Amount of cacodemons left on our map to kill
+
+// Function that allows you to draw text onto the screen
+void drawText(const char* text, int length, int x, int y) {
+	glMatrixMode(GL_PROJECTION);
+	double* matrix = new double[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+	glLoadIdentity();
+	glOrtho(0, glutGet(GLUT_WINDOW_WIDTH), 0, glutGet(GLUT_WINDOW_HEIGHT), -5, 5);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+	glLoadIdentity();
+	glRasterPos2i(x, y);
+	for (int i = 0; i < length; i++) {
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
+	}
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(matrix);
+	glMatrixMode(GL_MODELVIEW);
+}
 
 void initShader(void)
 {
@@ -142,7 +164,7 @@ glm::mat4 getProjection(float nearfield, float fov) {
 
 void initRendering(void)
 {
-	glClearColor(0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
+	glClearColor(0.8156f, 0.537f, 0.247f, 0.0f); // Outside Sky Color
 	checkError("initRendering");
 }
 
@@ -241,9 +263,6 @@ bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wallMath)
 	}
 	return false;
 }
-
-
-
 
 
 /* Renders all Walls in the Level */
@@ -363,7 +382,7 @@ void renderWalls()
 	wallModelArr[18] = wall1;
 
 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f), projectionMatrix, false);
+	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.5f, 0.8f, -10.5f), projectionMatrix, false);
 	wallMat[19] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f);
 	wallModelArr[19] = wall1;
 
@@ -466,7 +485,7 @@ void renderDemons()
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix, false);
+	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 210.0f) * demonsMatrix, projectionMatrix, false);
 	
 	if (boundboxbool) {
 		demonBox->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
@@ -659,7 +678,7 @@ void display(void)
 	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ceiling->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
 	ceiling->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
+	ceiling->render(viewMatrix * glm::translate(0.0f, 14.0f, 90.0f) * glm::scale(100.0f, 100.0f, 145.0f), projectionMatrix, useMat);
 
 
 	// Render all the Walls
@@ -677,6 +696,13 @@ void display(void)
 
 	/* -- Done rendering objects in the scene -- */
 	
+	// Draws the text at the top-left of the screen.
+	std::string text;
+	text = "Cacodemons Left On Map: " + std::to_string(cacodemonsLeft);
+	glColor3f(0, 0.6, 0); // Alter the text color with this
+	drawText(text.data(), text.size(), 0, glutGet(GLUT_WINDOW_HEIGHT) - 20);
+
+
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
@@ -957,7 +983,7 @@ int main(int argc, char** argv)
 	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
 
-	//PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
 	
 
 	glutMainLoop();
