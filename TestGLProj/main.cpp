@@ -149,6 +149,7 @@ void drawText(const char* text, int length, int x, int y) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong3.vert", "shaders/phong3.frag");
@@ -159,9 +160,11 @@ void initShader(void)
 	checkError("initShader");
 }
 
+
 glm::mat4 getProjection(float nearfield, float fov) {
 	return glm::infinitePerspective(fov, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), nearfield);
 }
+
 
 void initRendering(void)
 {
@@ -207,8 +210,6 @@ void dumpInfo(void)
 	printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	checkError("dumpInfo");
 }
-
-
 
 
 /*Function for Collision Detection
@@ -258,165 +259,139 @@ void renderWalls()
 	wall1->render(viewMatrix * wallMat[0], projectionMatrix, false);
 
 	
-
 	wallMat[1] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f);
 	wallModelArr[1] = wall1;
 	//wall2 material and render
 	wall1->render(viewMatrix * wallMat[1], projectionMatrix, false);
 	
 
+	//vertical walls within the border walls. positioned from left to right 
 	wallMat[2] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f);
 	wallModelArr[2] = wall1;
-	//vertical walls within the border walls. positioned from left to right 
 	wall1->render(viewMatrix * wallMat[2]), projectionMatrix, false);
 	
-
-
 	wallMat[3] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f);
 	wallModelArr[3] = wall1;
 	wall1->render(viewMatrix * wallMat[3], projectionMatrix, false);
 	
-
-
 	wallMat[4] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f);
 	wallModelArr[4] = wall1;
 	wall1->render(viewMatrix * wallMat[4], projectionMatrix, false);
 	
-
 	wallMat[5] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f);
 	wallModelArr[5] = wall1;
 	wall1->render(viewMatrix * wallMat[5] , projectionMatrix, false);
-	
 
 	wallMat[6] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f);
 	wallModelArr[6] = wall1;
-	wall1->render(viewMatrix*wallMat[6], projectionMatrix, false);
+	wall1->render(viewMatrix * wallMat[6], projectionMatrix, false);
 	
-
-
 	wallMat[7] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f);
 	wallModelArr[7] = wall1;
-	wall1->render(viewMatrix *wallMat[7], projectionMatrix, false);
-	
+	wall1->render(viewMatrix * wallMat[7], projectionMatrix, false);
 
 	wallMat[8] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f);
 	wallModelArr[8] = wall1;
 	wall1->render(viewMatrix * wallMat[8], projectionMatrix, false);
 	
-	//GABE FINISH THIS SECTION, move all wallMat[] initializations to above render calls, and set viewMatrix * wallMat[]
-
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[9] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f);
+	wall1->render(viewMatrix * wallMat[9], projectionMatrix, false);
 	wallModelArr[9] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f), projectionMatrix, false);
-	wallMat[10] =  glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f);
+	wallMat[10] = glm::scale(1.0f, 20.0f, 300.0f) * glm::translate(90.0f, 0.2f, 0.0f);
+	wall1->render(viewMatrix * wallMat[10], projectionMatrix, false);
 	wallModelArr[10] = wall1;
 
-
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(30.0f, 0.2f, 1.0f), projectionMatrix, false);
-	wallMat[11] =  glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(30.0f, 0.2f, 1.0f);
+	wallMat[11] = glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(30.0f, 0.2f, 1.0f);
+	wall1->render(viewMatrix * wallMat[11], projectionMatrix, false);
 	wallModelArr[11] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(-30.0f, 0.2f, 1.0f), projectionMatrix, false);
-	wallMat[12] =  glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(-30.0f, 0.2f, 1.0f);
+	wallMat[12] = glm::scale(1.0f, 20.0f, 150.0f) * glm::translate(-30.0f, 0.2f, 1.0f);
+	wall1->render(viewMatrix * wallMat[12], projectionMatrix, false);
 	wallModelArr[12] = wall1;
 
 
 	//horizontal walls within the border border 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.2f, 10.5f), projectionMatrix, false);
-	wallMat[13] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.2f, 10.5f);
+	wallMat[13] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.2f, 10.5f);
+	wall1->render(viewMatrix * wallMat[13], projectionMatrix, false);
 	wallModelArr[13] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f), projectionMatrix, false);
-	wallMat[14] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f);
+	wallMat[14] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f);
+	wall1->render(viewMatrix * wallMat[14], projectionMatrix, false);
 	wallModelArr[14] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f), projectionMatrix, false);
 	wallMat[15] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -10.5f);
+	wall1->render(viewMatrix * wallMat[15], projectionMatrix, false);
 	wallModelArr[15] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -40.5f), projectionMatrix, false);
-	wallMat[16] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -40.5f);
+	wallMat[16] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, -40.5f);
+	wall1->render(viewMatrix * wallMat[16], projectionMatrix, false);
 	wallModelArr[16] = wall1;
 
-
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, 40.5f), projectionMatrix, false);
-	wallMat[17] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, 40.5f);
+	wallMat[17] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.2f, 40.5f);
+	wall1->render(viewMatrix * wallMat[17], projectionMatrix, false);
 	wallModelArr[17] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, 10.5f), projectionMatrix, false);
-	wallMat[18] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, 10.5f);
+	wallMat[18] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, 10.5f);
+	wall1->render(viewMatrix * wallMat[18], projectionMatrix, false);
 	wallModelArr[18] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.5f, 0.8f, -10.5f), projectionMatrix, false);
-	wallMat[19] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f);
+	wallMat[19] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f);
+	wall1->render(viewMatrix * wallMat[19], projectionMatrix, false);
 	wallModelArr[19] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.3f, -10.5f), projectionMatrix, false);
-	wallMat[20] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.3f, -10.5f);
+	wallMat[20] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-0.3f, 0.3f, -10.5f);
+	wall1->render(viewMatrix * wallMat[20], projectionMatrix, false);
 	wallModelArr[20] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(1.3f, 0.3f, -10.5f), projectionMatrix, false);
-	wallMat[21] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(1.3f, 0.3f, -10.5f);
+	wallMat[21] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(1.3f, 0.3f, -10.5f);
+	wall1->render(viewMatrix * wallMat[21], projectionMatrix, false);
 	wallModelArr[21] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, -10.5f), projectionMatrix, false);
-	wallMat[22] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, -10.5f);
+	wallMat[22] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, -10.5f);
+	wall1->render(viewMatrix * wallMat[22], projectionMatrix, false);
 	wallModelArr[22] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f), projectionMatrix, false);
-	wallMat[23] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
+	wallMat[23] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
+	wall1->render(viewMatrix * wallMat[23], projectionMatrix, false);
 	wallModelArr[23] = wall1;
 
-
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f), projectionMatrix, false);
-	wallMat[24] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
+	wallMat[24] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 10.5f);
+	wall1->render(viewMatrix * wallMat[24], projectionMatrix, false);
 	wallModelArr[24] = wall1;
 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f), projectionMatrix, false);
-	wallMat[25] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f);
+	wallMat[25] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-1.3f, 0.3f, 20.5f);
+	wall1->render(viewMatrix * wallMat[25], projectionMatrix, false);
 	wallModelArr[25] = wall1;
 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-2.3f, 0.3f, 20.5f), projectionMatrix, false);
-	wallMat[26] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-2.3f, 0.3f, 20.5f);
+	wallMat[26] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(-2.3f, 0.3f, 20.5f);
+	wall1->render(viewMatrix * wallMat[26], projectionMatrix, false);
 	wallModelArr[26] = wall1;
 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(2.3f, 0.3f, 20.5f), projectionMatrix, false);
-	wallMat[27] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(2.3f, 0.3f, 20.5f);
+	wallMat[27] = glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(2.3f, 0.3f, 20.5f);
+	wall1->render(viewMatrix * wallMat[27], projectionMatrix, false);
 	wallModelArr[27] = wall1;
 
+
 	//horizontal walls to make top and bottom border 
-	wall1->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f), projectionMatrix, false);
-	wallMat[28] =  glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f);
+	wallMat[28] = glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, 60.5f);
+	wall1->render(viewMatrix * wallMat[28], projectionMatrix, false);
 	wallModelArr[28] = wall1;
 
-	wall1->render(viewMatrix * glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f), projectionMatrix, false);
-	wallMat[29] =  glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f);
+	wallMat[29] = glm::scale(200.0f, 20.0f, 5.0f) * glm::translate(0.0f, 0.2f, -60.5f);
+	wall1->render(viewMatrix * wallMat[29], projectionMatrix, false);
 	wallModelArr[29] = wall1;
 
+
 	//furthest left walls, makes the outside border
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f), projectionMatrix, false);
-	wallMat[30] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f);
+	wallMat[30] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, 0.24f);
+	wall1->render(viewMatrix * wallMat[30], projectionMatrix, false);
 	wallModelArr[30] = wall1;
 
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix, false);
-	wallMat[31] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
+	wallMat[31] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
+	wall1->render(viewMatrix * wallMat[31], projectionMatrix, false);
 	wallModelArr[31] = wall1;
+
 
 	if (boundboxbool) {
 		for (int n = 0; n < 32; n++) {
@@ -424,6 +399,8 @@ void renderWalls()
 		}
 	}
 }
+
+
 void renderDemons()
 {
 	//demon
@@ -433,13 +410,11 @@ void renderDemons()
 	//demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 = 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
-	
-	
+
 	// room with torches 
 	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix, false);
 	
 	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix, false);
-	
 
 	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix, false);
 	
@@ -489,6 +464,7 @@ void renderDemons()
 	}
 
 }
+
 
 /* Loads all Wall models in the Level */
 void wallModels()
@@ -744,169 +720,151 @@ void keyboard(unsigned char key, int x, int y)
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key)
 	{
-	case 27: // This is an ASCII value respresenting the ESC key
-		exit(0);
-		break;
-	case 'b':
-		boundboxbool = !boundboxbool;
-		break;
-	case 'q': // Strafes left //DOES NOT WORK
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 27: // This is an ASCII value respresenting the ESC key
+			exit(0);
+			break;
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+		case 'b':
+			boundboxbool = !boundboxbool;
+			break;
 
-		// Updates the model matrix of our character to strafe to the left
-		modelMatrix = glm::translate(strafeVec) * modelMatrix;
-		break;
+		case 'q': // Strafes left //DOES NOT WORK
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-	case 'e': // Strafes right //DOES NOT WORK
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Updates the model matrix of our character to strafe to the left
+			modelMatrix = glm::translate(strafeVec) * modelMatrix;
+			
+			break;
 
-		// Updates the model matrix of our character to strafe to the right
-		modelMatrix = glm::translate(-strafeVec) * modelMatrix;
-		break;
+		case 'e': // Strafes right //DOES NOT WORK
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
+			// Updates the model matrix of our character to strafe to the right
+			modelMatrix = glm::translate(-strafeVec) * modelMatrix;
+			break;
 
-	case 'w': // Moves our character forward
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'w': // Moves our character forward
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 		
-
-		//keep a previous marker of our matrix
-		prevModelMatrix = modelMatrix;
+			//keep a previous marker of our matrix
+			prevModelMatrix = modelMatrix;
 		
-		collisionDetection = false;
+			collisionDetection = false;
 
+			//printf("Previous ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
 
+			modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
+			//printf("New ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
 
-		//printf("Previous ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
-
-
-		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
-
-		//printf("New ModelMat pos is %f %f %f \n", modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
-
-		//check if we have ANY detection
-		for (int i = 0; i < 32; i++)
-		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
-
-			if (collisionDetection)
+			//check if we have ANY detection
+			for (int i = 0; i < 32; i++)
 			{
-				break;
+				collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
+
+				if (collisionDetection)
+				{
+					break;
+				}
+
 			}
 
-		}
-
-		
-
-		printf("Collision is %d \n", collisionDetection);
-		//if we don't have a collision then update modelMatrix accordingly
-		if (collisionDetection)
-		{
-			modelMatrix = prevModelMatrix;
-		}
-
-
-
-
-
-		break;
-
-	case 's': // Moves our character back
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
-
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-
-		//keep a previous marker of our matrix
-		prevModelMatrix = modelMatrix;
-
-		collisionDetection = false;
-
-		modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
-
-		//check if we have ANY detection
-		for (int i = 0; i < 32; i++)
-		{
-			collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
-
+			printf("Collision is %d \n", collisionDetection);
+			//if we don't have a collision then update modelMatrix accordingly
 			if (collisionDetection)
 			{
-				break;
+				modelMatrix = prevModelMatrix;
 			}
 
-		}
+			break;
+
+		case 's': // Moves our character back
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+
+			//keep a previous marker of our matrix
+			prevModelMatrix = modelMatrix;
+
+			collisionDetection = false;
+
+			modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
+
+			//check if we have ANY detection
+			for (int i = 0; i < 32; i++)
+			{
+				collisionDetection = CheckDetection(modelMatrix, wallMat[i]);
+
+				if (collisionDetection)
+				{
+					break;
+				}
+
+			}
+
+			printf("Collision is %d \n", collisionDetection);
+			//if we don't have a collision then update modelMatrix accordingly
+			if (collisionDetection)
+			{
+				modelMatrix = prevModelMatrix;
+			}
+
+			break;
+
+		case 'a': // Rotates our character to the left
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+
+			// Rotates the model matrix of our character to the left
+			modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
+
+			break;
+
+		case 'd': // Rotates our character to the right	
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+
+			// Rotates the model matrix of our character to the right
+			modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
+
+			break;
 
 
-		
+		case 'f': // Zooms in (Fly camera)
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+			break;
 
-		printf("Collision is %d \n", collisionDetection);
-		//if we don't have a collision then update modelMatrix accordingly
-		if (collisionDetection)
-		{
-			modelMatrix = prevModelMatrix;
-		}
+		case 'v': // Zooms out (Fly camera)
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+			break;
 
-		break;
-
-	case 'a': // Rotates our character to the left
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
-
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-
-		// Rotates the model matrix of our character to the left
-		modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
-
-		break;
-
-	case 'd': // Rotates our character to the right	
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
-
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
-
-		// Rotates the model matrix of our character to the right
-		modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
-
-		break;
-
-
-
-	case 'f': // Zooms in (Fly camera)
-		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-		break;
-
-	case 'v': // Zooms out (Fly camera)
-		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-		break;
-
-
-
-
-	case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
-		if (isSpotlightOnGun == false)
-			isSpotlightOnGun = true;
-		else if (isSpotlightOnGun == true)
-			isSpotlightOnGun = false;
-		break;
+		case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
+			if (isSpotlightOnGun == false)
+				isSpotlightOnGun = true;
+			else if (isSpotlightOnGun == true)
+				isSpotlightOnGun = false;
+			break;
 	}
-
 }
 
 
