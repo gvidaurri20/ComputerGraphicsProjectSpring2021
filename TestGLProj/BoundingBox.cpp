@@ -29,10 +29,10 @@ BoundingBox::BoundingBox(Shader* shader, Model* model):Model(shader){
 	glGenBuffers(1, &BoundingBox::m_VBO[0]); // generate a 'name' for the VBO
 	glGenBuffers(1, &BoundingBox::m_NBO[0]); // generate a 'name' for the NBO
 	glGenBuffers(1, &BoundingBox::m_IBO[0]); // generate a 'name' for the IBO
-	if (!FindBoundaries()) {
+	/*if (!FindBoundaries()) {
 		std::cerr << "Unable to find the boundaries of box" << std::endl;
-	}
-	updateBuffers();
+	}*/
+	//updateBuffers();
 }
 void BoundingBox::checkError(const char* functionName)
 {
@@ -98,7 +98,7 @@ bool BoundingBox::FindBoundaries() {
 
 
 
-		printf("x%f x%f y%f y%f z%f z%f\n", xmin, xmax, ymin, ymax, zmin, zmax);
+		//printf("x%f x%f y%f y%f z%f z%f\n", xmin, xmax, ymin, ymax, zmin, zmax);
 		return true;
 	}
 	catch (...) {

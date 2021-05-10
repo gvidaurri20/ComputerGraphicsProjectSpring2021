@@ -40,7 +40,6 @@
 
  /* -- Shader and Model Declarations -- */
 Shader shader; // loads our vertex and fragment shaders
-Shader green;
 Model* ground; // The ground
 Model* ceiling; // The ceiling
 Model* sphere; // The floating monkey sphere in the center of the scene
@@ -54,7 +53,6 @@ Model* torch;
 /* -- Enemy model Declarations -- */
 Model* demonModel;
 Model* obamidModel;
-BoundingBox* box;
 /* -- Enemy model Declarations End Here -- */
 float angle2, angle1;
 /* -- Wall Model Declarations -- */
@@ -128,16 +126,12 @@ bool isSpotlightOn = true; // Toggle for whether the spotlight in the scene is o
 void initShader(void)
 {
 	shader.InitializeFromFile("shaders/phong3.vert", "shaders/phong3.frag");
-	green.InitializeFromFile("shaders/phong.vert", "shaders/green.frag");
 	//shader.AddAttribute("vertexPosition");
 	//shader.AddAttribute("vertexNormal");
 
 	checkError("initShader");
 }
 
-glm::mat4 getProjection(float nearfield, float fov) {
-	return glm::infinitePerspective(fov, (float)glutGet(GLUT_WINDOW_WIDTH) / (float)glutGet(GLUT_WINDOW_HEIGHT), nearfield);
-}
 
 void initRendering(void)
 {
@@ -154,8 +148,7 @@ void init(void)
 	//camera = new QuatCamera(800,600,initpos, initlookatpnt, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Perspective projection matrix.
-	projectionMatrix = //glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 1000.0f);
-		getProjection(1.0f, 45.0f);
+	projectionMatrix = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 1000.0f);
 
 	// Load identity matrix into model matrix.
 	modelMatrix = glm::mat4();
@@ -219,19 +212,18 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	*/
 
 	//get our bounding box and find its boundaries
-	//BoundingBox box = BoundingBox::BoundingBox(&green, wall);
-	//box.FindBoundaries();
-	//box.render(viewMatrix * wallMath, projectionMatrix);
-	//box->render(viewMatrix * wallMath, projectionMatrix);
+	BoundingBox box = BoundingBox::BoundingBox(&shader, wall);
+	box.FindBoundaries();
+
 	//player position
 	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
 
 	//take in a mat4 of each wall
 	//multiply the mins and maxes by the wall material
-	glm::vec4 minValues = glm::vec4(box->xmin, box->ymin, box->zmin, 1.0f);
+	glm::vec4 minValues = glm::vec4(box.xmin, box.ymin, box.zmin, 1.0f);
 	minValues = wallMath * minValues;
 
-	glm::vec4 maxValues = glm::vec4(box->xmax, box->ymax, box->zmax, 1.0f);
+	glm::vec4 maxValues = glm::vec4(box.xmax, box.ymax, box.zmax, 1.0f);
 	maxValues = wallMath * maxValues;
 
 	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
@@ -420,8 +412,6 @@ void renderWalls()
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f), projectionMatrix, false);
 	wallMat[31] =  glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(100.0f, 0.2f, -.24f);
 	wallModelArr[31] = wall1;
-
-	
 }
 void renderDemons()
 {
@@ -476,7 +466,6 @@ void wallModels()
 	wall17 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall18 = new Model(&shader, "models/unitcube.obj", "models/");
 	wall19 = new Model(&shader, "models/unitcube.obj", "models/");
-	box = new BoundingBox(&green, wall1);
 }
 
 
@@ -596,7 +585,7 @@ void display(void)
 	gun->setOverrideSpecularShininessMaterial(40.0f);
 	gun->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gun->render(glm::translate(1.0f, -1.0f, -2.0f) * glm::scale(.05f, .05f, .05f) * glm::rotate(-90.0f, 0.0f, 1.0f, 0.0f), projectionMatrix, false); // Render the gun
-	
+
 	// Floating Cylinder
 	cylinder->setOverrideDiffuseMaterial(glm::vec4(1.0, 0.0, 0.0, 1.0));
 	cylinder->setOverrideAmbientMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
@@ -604,7 +593,7 @@ void display(void)
 	cylinder->setOverrideSpecularShininessMaterial(90.0f);
 	cylinder->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	cylinder->render(viewMatrix * glm::translate(0.0f, 5.0f, 0.0f) * glm::rotate(180.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, useMat);
-	//bruh->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
+
 	// Renders the ground.
 	//ground->render(viewMatrix * glm::translate(0.0f, -5.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix);
 	// Ground
@@ -626,18 +615,14 @@ void display(void)
 	renderWalls();
 	// Render the enemies
 	renderDemons();
-	for (int n = 0; n < 32; n++) {
-		box->render(viewMatrix * wallMat[n], projectionMatrix);
-	}
+
 	// Gun Muzzle Light
 	gunMuzzleLight->setOverrideDiffuseMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	gunMuzzleLight->setOverrideSpecularShininessMaterial(40.0f);
 	gunMuzzleLight->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	gunMuzzleLight->render(glm::translate(0.75f, -0.55f, -3.6f) * glm::scale(0.05f, 0.05f, 0.05f) * glm::rotate(90.0f, 1.0f, 0.0f, 0.0f), projectionMatrix, false);
 	
-
 	/* -- Done rendering objects in the scene -- */
-	
 	glutSwapBuffers(); // Swap the buffers.
 
 	checkError("display");
@@ -655,7 +640,6 @@ void idle()
 void reshape(int w, int h)
 {
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-	projectionMatrix = getProjection(1.0f, 45.0f);
 	checkError("reshape");
 }
 
@@ -876,8 +860,7 @@ static void passiveMouse(int x, int y)
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH|GLUT_MULTISAMPLE);
-	glutSetOption(GLUT_MULTISAMPLE, 4);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Simple Doom Game");
@@ -910,7 +893,6 @@ int main(int argc, char** argv)
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	torch = new Model(&shader, "models/torch.obj", "models/");
-	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
 
 	//PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
