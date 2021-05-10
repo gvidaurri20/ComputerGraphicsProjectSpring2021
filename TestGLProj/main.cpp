@@ -141,7 +141,7 @@ glm::mat4 getProjection(float nearfield, float fov) {
 
 void initRendering(void)
 {
-	glClearColor(0.117f, 0.565f, 1.0f, 0.0f); // Dodger Blue
+	glClearColor(0.8156f, 0.537f, 0.247f, 0.0f); // Outside Sky Color
 	checkError("initRendering");
 }
 
@@ -240,9 +240,6 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	}
 	return false;
 }
-
-
-
 
 
 /* Renders all Walls in the Level */
@@ -619,7 +616,7 @@ void display(void)
 	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ceiling->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
 	ceiling->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
+	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 200.0f), projectionMatrix, useMat);
 
 
 	// Render all the Walls
