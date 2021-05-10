@@ -11,21 +11,21 @@
  */
 
 in vec3 N;
-in vec3 L[2];
+in vec3 L[4];
 in vec3 E;
-in vec3 H[2];
+in vec3 H[4];
 in vec4 eyePosition;
 in vec2 texCoordsInterpolated;
 
-uniform vec4 lightPosition[2];
+uniform vec4 lightPosition[4];
 uniform mat4 Projection;
 uniform mat4 ModelView;
 
 uniform int howManyLights;
 
-uniform vec4 lightDiffuse[2];
-uniform vec4 lightSpecular[2]; 
-uniform vec4 lightAmbient[2];
+uniform vec4 lightDiffuse[4];
+uniform vec4 lightSpecular[4]; 
+uniform vec4 lightAmbient;
 uniform vec4 surfaceDiffuse;
 uniform vec4 surfaceSpecular;
 uniform float shininess;
@@ -52,35 +52,65 @@ in vec3 VofSpotlight; // Viewing vertex vector of the spotlight received from ve
 void main()
 {
     vec3 Normal = normalize(N);
-    vec3 Light[2];
+    vec3 Light[4];
     Light[0] = normalize(lightPosition[0] - eyePosition).xyz;
     Light[1] = normalize(lightPosition[1] - eyePosition).xyz;
+    Light[2] = normalize(lightPosition[2] - eyePosition).xyz;
+    //Light[3] = normalize(lightPosition[3] - eyePosition).xyz;
     vec3 Eye    = normalize(E);
-    vec3 Half[2];
+    vec3 Half[4];
     Half[0] = normalize(H[0]);
     Half[1] = normalize(H[1]);
+    Half[2] = normalize(H[2]);
+    //Half[3] = normalize(H[3]);
 	
-    float Kd[2];
+    float Kd[4];
     Kd[0] = max(dot(Normal, Light[0]), 0.0);
     Kd[1] = max(dot(Normal, Light[1]), 0.0);
-    float Ks[2];
+    Kd[2] = max(dot(Normal, Light[2]), 0.0);
+    //Kd[3] = max(dot(Normal, Light[3]), 0.0);
+    float Ks[4];
     Ks[0] = pow(max(dot(reflect(-Light[0], Normal),Eye), 0.0), shininess);
     Ks[1] = pow(max(dot(reflect(-Light[1], Normal),Eye), 0.0), shininess);
+    Ks[2] = pow(max(dot(reflect(-Light[2], Normal),Eye), 0.0), shininess);
+    //Ks[3] = pow(max(dot(reflect(-Light[3], Normal),Eye), 0.0), shininess);
     float Ka = 1.0;
 
-    vec4 diffuse[2];
+    vec4 diffuse[4];
     diffuse[0] = Kd[0] * lightDiffuse[0] * surfaceDiffuse;
     diffuse[1] = Kd[1] * lightDiffuse[1] * surfaceDiffuse;
-    vec4 specular[2];
+    diffuse[2] = Kd[2] * lightDiffuse[2] * surfaceDiffuse;
+    //diffuse[3] = Kd[3] * lightDiffuse[3] * surfaceDiffuse;
+    vec4 specular[4];
     specular[0] = Ks[0] * lightSpecular[0] * surfaceSpecular;
     specular[1] = Ks[1] * lightSpecular[1] * surfaceSpecular;
-    vec4 ambient[2];
-    ambient[0] = Ka * lightAmbient[0] * surfaceAmbient;
-    ambient[1] = Ka * lightAmbient[1] * surfaceAmbient;
+    specular[2] = Ks[2] * lightSpecular[2] * surfaceSpecular;
+    //specular[3] = Ks[3] * lightSpecular[3] * surfaceSpecular;
+    
+    vec4 ambient = Ka * lightAmbient * surfaceAmbient;
+    //vec4 ambient[4];
+    //ambient[0] = Ka * lightAmbient[0] * surfaceAmbient;
+    //ambient[1] = Ka * lightAmbient[1] * surfaceAmbient;
+    //ambient[2] = Ka * lightAmbient[2] * surfaceAmbient;
+    //ambient[3] = Ka * lightAmbient[3] * surfaceAmbient;
 
-    vec4 LightsStuff[2];
-    LightsStuff[0] = diffuse[0] + specular[0] + ambient[0];
-    LightsStuff[1] = diffuse[1] + specular[1] + ambient[1];
+    float linearAttenuation[4];
+    linearAttenuation[0] = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition[0] - eyePosition)));
+    linearAttenuation[1] = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition[1] - eyePosition)));
+    linearAttenuation[2] = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition[2] - eyePosition)));
+    //linearAttenuation[3] = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition[3] - eyePosition)));
+    //float linearAttenuations;
+    //for(int i = 0; i < howManyLights; i++)
+    //{
+    //    linearAttenuations = linearAttenuations + linearAttenuation[i];
+    //}
+
+    vec4 LightsStuff[4];
+    LightsStuff[0] = linearAttenuation[0] * (diffuse[0] + specular[0]);
+    LightsStuff[1] = linearAttenuation[1] * (diffuse[1] + specular[1]);
+    LightsStuff[2] = linearAttenuation[2] * (diffuse[2] + specular[2]);
+    //LightsStuff[3] = linearAttenuation[3] * (diffuse[3] + specular[3]);
+
 
     vec4 totalLights;
     for(int i = 0; i < howManyLights; i++)
@@ -121,7 +151,6 @@ void main()
         spotlightEffect = 0;
 
 
-    //float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
     vec4 texColor = vec4(0.0,0.0,0.0,1.0);
 	if(useTexture > 0.0){
 		texColor = texture2D(diffuseTexture,texCoordsInterpolated);
@@ -129,5 +158,5 @@ void main()
 
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
     //gl_FragColor = surfaceEmissive + ambient + /*linearAttenuation * */(diffuse + specular) + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight));
-    gl_FragColor = surfaceEmissive + totalLights + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight));
+    gl_FragColor = surfaceEmissive + ambient + totalLights + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight));
 }
