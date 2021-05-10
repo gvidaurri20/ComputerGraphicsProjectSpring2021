@@ -930,7 +930,7 @@ int main(int argc, char** argv)
 	glutSetOption(GLUT_MULTISAMPLE, 4);
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Simple Doom Game");
+	glutCreateWindow("DoomUTSA");
 
 	glewInit();
 	dumpInfo();
