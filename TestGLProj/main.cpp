@@ -581,6 +581,7 @@ int main(int argc, char** argv)
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 
+
 	wallModels(); // Loads all wall models in our program
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
