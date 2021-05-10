@@ -382,7 +382,7 @@ void renderWalls()
 	wallModelArr[18] = wall1;
 
 
-	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f), projectionMatrix, false);
+	wall1->render(viewMatrix * glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.5f, 0.8f, -10.5f), projectionMatrix, false);
 	wallMat[19] =  glm::scale(40.0f, 20.0f, 5.0f) * glm::translate(0.3f, 0.8f, -10.5f);
 	wallModelArr[19] = wall1;
 
@@ -485,7 +485,7 @@ void renderDemons()
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix, false);
+	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 210.0f) * demonsMatrix, projectionMatrix, false);
 	
 	if (boundboxbool) {
 		demonBox->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
@@ -670,7 +670,7 @@ void display(void)
 	ceiling->setOverrideDiffuseMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	ceiling->setOverrideAmbientMaterial(glm::vec4(0.2, 0.0, 0.0, 1.0));
 	ceiling->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 200.0f), projectionMatrix, useMat);
+	ceiling->render(viewMatrix * glm::translate(0.0f, 14.0f, 90.0f) * glm::scale(100.0f, 100.0f, 145.0f), projectionMatrix, useMat);
 
 
 	// Render all the Walls
