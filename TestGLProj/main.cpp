@@ -691,7 +691,7 @@ void display(void)
 	// Draws the text at the top-left of the screen.
 	std::string text;
 	text = "Cacodemons Left On Map: " + std::to_string(cacodemonsLeft);
-	//glColor3f(0, 1, 0); // Alter the text color with this
+	glColor3f(0, 0.6, 0); // Alter the text color with this
 	drawText(text.data(), text.size(), 0, glutGet(GLUT_WINDOW_HEIGHT) - 20);
 
 
@@ -975,7 +975,7 @@ int main(int argc, char** argv)
 	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
 
-	//PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
+	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
 	
 
 	glutMainLoop();
