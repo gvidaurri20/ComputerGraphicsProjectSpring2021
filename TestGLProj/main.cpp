@@ -438,8 +438,8 @@ void renderDemons()
 	//demonModel->render(viewMatrix *demonMat[1], projectionMatrix, false);
 	demonMat[2] = glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix;
 	//demonModel->render(viewMatrix *demonMat[2], projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	//demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
+	//demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix, false);
 	
 	demonMat[3] = glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix;
 	//demonModel->render(viewMatrix * demonMat[3], projectionMatrix, false);
