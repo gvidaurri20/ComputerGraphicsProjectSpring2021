@@ -55,7 +55,7 @@ Model* demonModel;
 Model* obamidModel;
 
 /* -- Enemy model Declarations End Here -- */
-float angle2, angle1;
+float angle2;
 /* -- Wall Model Declarations -- */
 Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 * wall8, * wall9, * wall10, * wall11, * wall12, * wall13, * wall14,
@@ -231,6 +231,10 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	{
 		return true;
 	}
+
+
+
+
 	return false;
 }
 
@@ -418,9 +422,6 @@ void renderDemons()
 {
 	//demon
 	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	demons2Matrix = demons2Matrix * glm::rotate(1.0f, 1.0f, angle1 -= 4.5, 0.0f);
-
-	//demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 = 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
 
 	// room with torches 
@@ -435,8 +436,8 @@ void renderDemons()
 	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix, false);
 
 	//bottom enemies
-	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
-	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f), projectionMatrix, false);
 
 	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
