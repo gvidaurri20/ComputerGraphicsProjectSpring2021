@@ -48,6 +48,7 @@ Model* cylinder; // The floating cylinder above the monkey sphere
 Model* gun; // The gun
 Model* gunMuzzleLight; // The gun light above the muzzle 
 Model* demon;
+Model* torch;
 /* -- Shader and Model Declarations End Here -- */
 /* -- Enemy model Declarations -- */
 Model* demonModel;
@@ -92,7 +93,10 @@ glm::mat4 obamid;
 
 /* -- Point Light Declarations -- */
 float rotation = 0.0f;
-glm::vec4 lightPosition = glm::vec4(0.0f, 3.0f, 0.0f, 1.0f);
+glm::vec4 lightPosition1 = glm::vec4(0.0f, 3.0f, 0.0f, 1.0f);
+glm::vec4 lightPosition2 = glm::vec4(40.0f, 3.0f, 0.0f, 1.0f);
+glm::vec4 lightPosition3 = glm::vec4(-40.0f, 3.0f, 0.0f, 1.0f);
+//glm::vec4 lightPosition4 = glm::vec4(0.0f, 0.0f, -60.0f, 1.0f);
 /* -- Point Light Declarations End Here -- */
 
 /* -- Camera Variable Declarations -- */
@@ -470,14 +474,36 @@ void display(void)
 
 	rotation += 0.05f; // Update rotation angle if rotation is enabled.
 
-	glm::vec4 lightPos = /*glm::rotate(rotation,0.0f, 0.0f, 1.0f) */ lightPosition;
-
-
+	// Info for First Light at Start of Level
+	glm::vec4 lightPos1 = /*glm::rotate(rotation,0.0f, 0.0f, 1.0f) */ lightPosition1;
 	shader.Activate(); // Bind shader.
-	shader.SetUniform("lightPosition", viewMatrix * lightPos);
-	shader.SetUniform("lightDiffuse", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	shader.SetUniform("lightSpecular", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightPosition[0]", viewMatrix * lightPos1);
+	shader.SetUniform("lightDiffuse[0]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular[0]", glm::vec4(1.0, 1.0, 1.0, 1.0));
 	shader.SetUniform("lightAmbient", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+	// Info for Second Light
+	glm::vec4 lightPos2 = lightPosition2;
+	shader.SetUniform("lightPosition[1]", viewMatrix * lightPos2);
+	shader.SetUniform("lightDiffuse[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//shader.SetUniform("lightAmbient[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+	// Info for Third Light
+	glm::vec4 lightPos3 = lightPosition3;
+	shader.SetUniform("lightPosition[2]", viewMatrix * lightPos3);
+	shader.SetUniform("lightDiffuse[2]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular[2]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//shader.SetUniform("lightAmbient[2]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+	// Info for Fourth Light
+	//glm::vec4 lightPos4 = lightPosition4;
+	//shader.SetUniform("lightPosition[3]", viewMatrix * lightPos4);
+	//shader.SetUniform("lightDiffuse[3]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//shader.SetUniform("lightSpecular[3]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//shader.SetUniform("lightAmbient[3]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+	shader.SetUniform("howManyLights", 3); // Total point lights in the game
 
 	// This section of code determines whether or not the spotlight will be on the gun or in the center
 	// monkey sphere point up. It does this by moving the spotlight's position and direction and also 
@@ -527,9 +553,17 @@ void display(void)
 	sphere->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
 	sphere->render(viewMatrix, projectionMatrix, false); // Render sphere in the middle of the area.
 
-	// Sphere Light
-	sphereLight->render(viewMatrix * glm::translate(lightPos.x, lightPos.y, lightPos.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
+	// Sphere Lights
+	//sphereLight->render(viewMatrix * glm::translate(lightPos1.x, lightPos1.y, lightPos1.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, true); // Render sphere light at beginning of level
+	//sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//sphereLight->render(viewMatrix * glm::translate(lightPos2.x, lightPos2.y, lightPos2.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, true); // Render sphere light in left room
+	torch->render(viewMatrix * glm::translate(lightPos2.x, lightPos2.y - 2.0f, lightPos2.z), projectionMatrix, false);
 	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//sphereLight->render(viewMatrix * glm::translate(lightPos3.x, lightPos3.y, lightPos3.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, true); // Render rotating sphere light
+	torch->render(viewMatrix * glm::translate(lightPos3.x, lightPos3.y - 2.0f, lightPos3.z), projectionMatrix, false);
+	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	//sphereLight->render(viewMatrix * glm::translate(lightPos4.x, lightPos4.y, lightPos4.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
+	//sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 
 	// Gun
 	gun->setOverrideDiffuseMaterial(glm::vec4(.3, 0.3, 0.3, 1.0));
@@ -848,6 +882,8 @@ int main(int argc, char** argv)
 	gunMuzzleLight = new Model(&shader, "models/cylinder.obj", "models/");
 	demonModel = new Model(&shader, "models/cacodemon.obj", "models/");
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
+	demon = new Model(&shader, "models/cacodemon.obj", "models/");
+	torch = new Model(&shader, "models/torch.obj", "models/");
 	wallModels(); // Loads all wall models in our program
 
 	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
