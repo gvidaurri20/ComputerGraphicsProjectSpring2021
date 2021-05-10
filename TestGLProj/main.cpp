@@ -149,7 +149,8 @@ void init(void)
 	//camera = new QuatCamera(800,600,initpos, initlookatpnt, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// Perspective projection matrix.
-	projectionMatrix = glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 1000.0f);
+	projectionMatrix = //glm::perspective(45.0f, 800.0f / 600.0f, 1.0f, 1000.0f);
+		getProjection(0.5f, 45.0f);
 
 	// Load identity matrix into model matrix.
 	modelMatrix = glm::mat4();
@@ -227,7 +228,7 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	glm::vec4 maxValues = glm::vec4(box.xmax, box.ymax, box.zmax, 1.0f);
 	maxValues = wallMath * maxValues;
 
-	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
+	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && (playerPos.z-11) <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && (playerPos.z-9) >= minValues.z)
 	{
 		return true;
 	}
@@ -644,6 +645,7 @@ void idle()
 void reshape(int w, int h)
 {
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	projectionMatrix = getProjection(0.5f, 45.0f);
 	checkError("reshape");
 }
 
