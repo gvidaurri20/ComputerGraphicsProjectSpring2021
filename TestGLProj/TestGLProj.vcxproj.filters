@@ -63,5 +63,7 @@
   <ItemGroup>
     <None Include="shaders\phong3.frag" />
     <None Include="shaders\phong3.vert" />
+    <None Include="shaders\green.frag" />
+    <None Include="shaders\phong.vert" />
   </ItemGroup>
 </Project>
