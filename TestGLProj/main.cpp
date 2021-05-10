@@ -226,7 +226,7 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	glm::vec4 maxValues = glm::vec4(box.xmax, box.ymax, box.zmax, 1.0f);
 	maxValues = wallMath * maxValues;
 
-	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z -2 <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && playerPos.z +2  >= minValues.z)
+	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
 	{
 		return true;
 	}
@@ -767,7 +767,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		collisionDetection = false;
 
-		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
+		modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
 
 		//check if we have ANY detection
 		for (int i = 0; i < 32; i++)
@@ -886,7 +886,7 @@ int main(int argc, char** argv)
 	torch = new Model(&shader, "models/torch.obj", "models/");
 	wallModels(); // Loads all wall models in our program
 
-	PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
+	//PlaySound(TEXT("audio/E1M1.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP); // Plays the theme song from the first level of Doom
 	
 
 	glutMainLoop();
