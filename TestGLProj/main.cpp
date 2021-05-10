@@ -70,7 +70,8 @@ glm::mat4 planeTransMatrix; // (The ground) Where the plane model is located wrt
 
 /* -- Point Light Declarations -- */
 float rotation = 0.0f;
-glm::vec4 lightPosition = glm::vec4(0.0f, 3.0f, 0.0f, 1.0f);
+glm::vec4 lightPosition1 = glm::vec4(0.0f, 3.0f, 0.0f, 1.0f);
+glm::vec4 lightPosition2 = glm::vec4(3.0f, 0.0f, 0.0f, 1.0f);
 /* -- Point Light Declarations End Here -- */
 
 /* -- Camera Variable Declarations -- */
@@ -249,14 +250,23 @@ void display(void)
 
 	rotation += 0.05f; // Update rotation angle if rotation is enabled.
 
-	glm::vec4 lightPos = /*glm::rotate(rotation,0.0f, 0.0f, 1.0f) */ lightPosition;
-
-
+	// Info for First Light at Start of Level
+	glm::vec4 lightPos1 = /*glm::rotate(rotation,0.0f, 0.0f, 1.0f) */ lightPosition1;
 	shader.Activate(); // Bind shader.
-	shader.SetUniform("lightPosition", viewMatrix * lightPos);
-	shader.SetUniform("lightDiffuse", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	shader.SetUniform("lightSpecular", glm::vec4(1.0, 1.0, 1.0, 1.0));
-	shader.SetUniform("lightAmbient", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightPosition[0]", viewMatrix * lightPos1);
+	shader.SetUniform("lightDiffuse[0]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular[0]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightAmbient[0]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+	// Info for Second Light
+	glm::vec4 lightPos2 = lightPosition2;
+	shader.SetUniform("lightPosition[1]", viewMatrix * lightPos2);
+	shader.SetUniform("lightDiffuse[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightSpecular[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+	shader.SetUniform("lightAmbient[1]", glm::vec4(1.0, 1.0, 1.0, 1.0));
+
+
+	shader.SetUniform("howManyLights", 2); // Total point lights in the game
 
 	// This section of code determines whether or not the spotlight will be on the gun or in the center
 	// monkey sphere point up. It does this by moving the spotlight's position and direction and also 
@@ -307,7 +317,9 @@ void display(void)
 	sphere->render(viewMatrix, projectionMatrix, false); // Render sphere in the middle of the area.
 
 	// Sphere Light
-	sphereLight->render(viewMatrix * glm::translate(lightPos.x, lightPos.y, lightPos.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
+	sphereLight->render(viewMatrix * glm::translate(lightPos1.x, lightPos1.y, lightPos1.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
+	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
+	sphereLight->render(viewMatrix * glm::translate(lightPos2.x, lightPos2.y, lightPos2.z) * glm::scale(.1f, .1f, .1f), projectionMatrix, false); // Render rotating sphere light
 	sphereLight->setOverrideEmissiveMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 
 	// Gun
@@ -416,99 +428,96 @@ void keyboard(unsigned char key, int x, int y)
 	// Activates each case depending on which key on the keyboard is pressed
 	switch (key)
 	{
-	case 27: // This is an ASCII value respresenting the ESC key
-		exit(0);
-		break;
+		case 27: // This is an ASCII value respresenting the ESC key
+			exit(0);
+			break;
 
-	case 'q': // Strafes left //DOES NOT WORK
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'q': // Strafes left //DOES NOT WORK
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Updates the model matrix of our character to strafe to the left
-		modelMatrix = glm::translate(strafeVec) * modelMatrix;
-		break;
+			// Updates the model matrix of our character to strafe to the left
+			modelMatrix = glm::translate(strafeVec) * modelMatrix;
+			break;
 
-	case 'e': // Strafes right //DOES NOT WORK
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'e': // Strafes right //DOES NOT WORK
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Updates the model matrix of our character to strafe to the right
-		modelMatrix = glm::translate(-strafeVec) * modelMatrix;
-		break;
+			// Updates the model matrix of our character to strafe to the right
+			modelMatrix = glm::translate(-strafeVec) * modelMatrix;
+			break;
 
-	case 'w': // Moves our character forward
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'w': // Moves our character forward
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Updates the model matrix of our character to move forward
-		modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
+			// Updates the model matrix of our character to move forward
+			modelMatrix = glm::translate(retValCamcustom.lookatdirReturn) * modelMatrix;
 
-		break;
+			break;
 
-	case 's': // Moves our character back
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 's': // Moves our character back
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Updates the model matrix of our character to move back
-		modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
+			// Updates the model matrix of our character to move back
+			modelMatrix = glm::translate(-retValCamcustom.lookatdirReturn) * modelMatrix;
 
-		break;
+			break;
 
-	case 'a': // Rotates our character to the left
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'a': // Rotates our character to the left
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Rotates the model matrix of our character to the left
-		modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
+			// Rotates the model matrix of our character to the left
+			modelMatrix = modelMatrix * glm::rotate(5.0f, 0.0f, 1.0f, 0.0f);
 
-		break;
+			break;
 
-	case 'd': // Rotates our character to the right	
-		// Sets up the values to send to our camera
-		retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
+		case 'd': // Rotates our character to the right	
+			// Sets up the values to send to our camera
+			retValCamcustom.eyeReturn = glm::vec3(headModelMatrix[3].x, headModelMatrix[3].y, headModelMatrix[3].z - 10.0f);
 
-		// Calls our custom keyboard camera
-		retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
+			// Calls our custom keyboard camera
+			retValCamcustom = customCam.CustomCameraKeyboard(key, retValCamcustom.eyeReturn, retValCamcustom.centerReturn);
 
-		// Rotates the model matrix of our character to the right
-		modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
+			// Rotates the model matrix of our character to the right
+			modelMatrix = modelMatrix * glm::rotate(-5.0f, 0.0f, 1.0f, 0.0f);
 
-		break;
-
-
-
-	case 'f': // Zooms in (Fly camera)
-		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-		break;
-
-	case 'v': // Zooms out (Fly camera)
-		retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
-		break;
+			break;
 
 
+		case 'f': // Zooms in (Fly camera)
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+			break;
+
+		case 'v': // Zooms out (Fly camera)
+			retValCamcustomFly = customCam.CustomCameraKeyboard(key, retValCamcustomFly.eyeReturn, retValCamcustomFly.centerReturn);
+			break;
 
 
-	case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
-		if (isSpotlightOnGun == false)
-			isSpotlightOnGun = true;
-		else if (isSpotlightOnGun == true)
-			isSpotlightOnGun = false;
-		break;
+		case 'y': // Toggles Position of Spotlight (Either coming from center monkey sphere or gun)
+			if (isSpotlightOnGun == false)
+				isSpotlightOnGun = true;
+			else if (isSpotlightOnGun == true)
+				isSpotlightOnGun = false;
+			break;
 	}
 
 }
