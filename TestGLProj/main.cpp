@@ -422,10 +422,23 @@ void renderDemons()
 	//demon
 	demonsMatrix = demonsMatrix * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
 	demonModel->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix, false);
+	// room with torch 
+	demonModel->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f), projectionMatrix, false);
 
-	//obamid
+	//bottom enemies
+	demonModel->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f), projectionMatrix, false);
+	demonModel->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f), projectionMatrix, false);
+
+	//obamid enemy located mid top
 	obamid = obamid * glm::rotate(1.0f, 1.0f, angle2 += 4.5, 0.0f);
-	obamidModel->render(viewMatrix * obamid * glm::translate(13.0f, 0.0f, 0.0f), projectionMatrix, false);
+	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 220.0f), projectionMatrix, false);
 
 
 }
@@ -597,15 +610,10 @@ void display(void)
 	ceiling->render(viewMatrix * glm::translate(0.0f, 20.0f, 0.0f) * glm::scale(100.0f, 100.0f, 300.0f), projectionMatrix, useMat);
 
 
-
-
 	// Render all the Walls
 	renderWalls();
 	// Render the enemies
 	renderDemons();
-
-
-
 
 	// Gun Muzzle Light
 	gunMuzzleLight->setOverrideDiffuseMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
