@@ -54,7 +54,7 @@ Model* torch;
 /* -- Enemy model Declarations -- */
 Model* demonModel;
 Model* obamidModel;
-BoundingBox* box, * obamidBox, * demonBox;
+BoundingBox* box, * obamidBox, * demonBox[11];
 /* -- Enemy model Declarations End Here -- */
 float angle2, angle1;
 /* -- Wall Model Declarations -- */
@@ -65,6 +65,7 @@ Model* wall1, * wall2, * wall3, * wall4, * wall5, * wall6, * wall7,
 
 //mat4 record of each wall
 glm::mat4 wallMat[32];
+glm::mat4 demonMat[11];
 Model* wallModelArr[32];
 
 
@@ -223,30 +224,6 @@ void dumpInfo(void)
 */
 bool CheckDetection(glm::mat4 playerMatrix, glm::mat4 wallMath)
 {
-	//player and wall position
-	/*
-	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
-	glm::vec3 WallPos = glm::vec3(wall[3].x, wall[3].y, wall[3].z);
-
-	//get the distance of the two positions
-	float dist = glm::distance(playerPos, WallPos);
-
-
-
-
-	//if we are close to the wall, we have a collision detection
-	if (dist < 5.0)
-	{
-		return true;
-	}
-	*/
-
-	//get our bounding box and find its boundaries
-	//BoundingBox box = BoundingBox::BoundingBox(&green, wall);
-	//box.FindBoundaries();
-	//box.render(viewMatrix * wallMath, projectionMatrix);
-	//box->render(viewMatrix * wallMath, projectionMatrix);
-	//player position
 	glm::vec3 playerPos = glm::vec3(playerMatrix[3].x, playerMatrix[3].y, playerMatrix[3].z);
 
 	//take in a mat4 of each wall
@@ -274,59 +251,59 @@ void renderWalls()
 	//wall1->setOverrideSpecularMaterial(glm::vec4(1.0, 1.0, 1.0, 1.0));
 	//wall1->setOverrideSpecularShininessMaterial(90.0f);
 	wall1->setOverrideEmissiveMaterial(glm::vec4(0.0, 0.0, 0.0, 1.0));
-
-	//furthest right walls, to make the outside border
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f), projectionMatrix, false);
-
 	//wall1 material 
 	wallMat[0] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, 0.24f);
 	wallModelArr[0] = wall1;
+	//furthest right walls, to make the outside border
+	wall1->render(viewMatrix * wallMat[0], projectionMatrix, false);
 
+	
 
-	//wall2 material and render
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f), projectionMatrix, false);
 	wallMat[1] = glm::scale(1.0f, 20.0f, 400.0f) * glm::translate(-100.0f, 0.2f, -.24f);
 	wallModelArr[1] = wall1;
+	//wall2 material and render
+	wall1->render(viewMatrix * wallMat[1], projectionMatrix, false);
+	
 
-
-	//vertical walls within the border walls. positioned from left to right 
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[2] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-67.0f, 0.2f, -1.3f);
 	wallModelArr[2] = wall1;
+	//vertical walls within the border walls. positioned from left to right 
+	wall1->render(viewMatrix * wallMat[2]), projectionMatrix, false);
+	
 
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f), projectionMatrix, false);
-	wallMat[3] =  glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f);
+	wallMat[3] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-25.0f, 0.2f, -1.3f);
 	wallModelArr[3] = wall1;
+	wall1->render(viewMatrix * wallMat[3], projectionMatrix, false);
+	
 
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f), projectionMatrix, false);
-	wallMat[4] =  glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f);
+	wallMat[4] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-20.0f, 0.2f, 0.0f);
 	wallModelArr[4] = wall1;
+	wall1->render(viewMatrix * wallMat[4], projectionMatrix, false);
+	
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[5] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(-60.0f, 0.2f, 0.0f);
 	wallModelArr[5] = wall1;
+	wall1->render(viewMatrix * wallMat[5] , projectionMatrix, false);
+	
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[6] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(20.0f, 0.2f, 0.0f);
 	wallModelArr[6] = wall1;
+	wall1->render(viewMatrix*wallMat[6], projectionMatrix, false);
+	
 
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f), projectionMatrix, false);
 	wallMat[7] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(30.0f, 0.2f, -1.3f);
 	wallModelArr[7] = wall1;
+	wall1->render(viewMatrix *wallMat[7], projectionMatrix, false);
+	
 
-
-	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f), projectionMatrix, false);
 	wallMat[8] = glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(60.0f, 0.2f, 0.0f);
 	wallModelArr[8] = wall1;
-
+	wall1->render(viewMatrix * wallMat[8], projectionMatrix, false);
+	
+	//GABE FINISH THIS SECTION, move all wallMat[] initializations to above render calls, and set viewMatrix * wallMat[]
 
 
 	wall1->render(viewMatrix * glm::scale(1.0f, 20.0f, 135.0f) * glm::translate(70.0f, 0.2f, -1.3f), projectionMatrix, false);
@@ -488,17 +465,17 @@ void renderDemons()
 	obamidModel->render(viewMatrix *  glm::translate(-14.0f, 0.0f, 210.0f) * demonsMatrix, projectionMatrix, false);
 	
 	if (boundboxbool) {
-		demonBox->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
-		demonBox->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
+		demonBox[0]->render(viewMatrix * demonsMatrix * glm::translate(-3.0f, 0.0f, 0.0f), projectionMatrix);
+		demonBox[1]->render(viewMatrix * glm::translate(-45.0f, 0.0f, 0.0f) * demonsMatrix, projectionMatrix);
+		demonBox[2]->render(viewMatrix * glm::translate(45.0f, 0.0f, 0.0f) * demons2Matrix, projectionMatrix);
+		demonBox[3]->render(viewMatrix * glm::translate(-40.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
+		demonBox[4]->render(viewMatrix * glm::translate(40.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
+		demonBox[5]->render(viewMatrix * glm::translate(70.0f, 0.0f, 25.0f) * demonsMatrix, projectionMatrix);
+		demonBox[6]->render(viewMatrix * glm::translate(-70.0f, 0.0f, 25.0f) * demons2Matrix, projectionMatrix);
+		demonBox[7]->render(viewMatrix * glm::translate(65.0f, 0.0f, -60.0f) * demonsMatrix, projectionMatrix);
+		demonBox[8]->render(viewMatrix * glm::translate(-65.0f, 0.0f, -60.0f) * demons2Matrix, projectionMatrix);
+		demonBox[9]->render(viewMatrix * glm::translate(50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
+		demonBox[10]->render(viewMatrix * glm::translate(-50.0f, 0.0f, -180.0f) * demonsMatrix, projectionMatrix);
 		obamidBox->render(viewMatrix * glm::translate(-14.0f, 0.0f, 220.0f) * demonsMatrix, projectionMatrix);
 		/*if(dist < 2.0){ // collision detection for 2 unit spheres
 			shader.SetUniform("surfaceEmissive", glm::vec4(1.0, 0.0, 1.0,1.0));
@@ -977,8 +954,19 @@ int main(int argc, char** argv)
 	obamidModel = new Model(&shader, "models/obamid.obj", "models/");
 	demon = new Model(&shader, "models/cacodemon.obj", "models/");
 	torch = new Model(&shader, "models/torch.obj", "models/");
-	demonBox = new BoundingBox(&green, demonModel,1);
-	obamidBox = new BoundingBox(&green, obamidModel,2);
+	demonBox[0] = new BoundingBox(&green, demonModel,1);
+	demonBox[1] = new BoundingBox(&green, demonModel,2);
+	demonBox[2] = new BoundingBox(&green, demonModel,3);
+	demonBox[3] = new BoundingBox(&green, demonModel, 4);
+	demonBox[4] = new BoundingBox(&green, demonModel, 5);
+	demonBox[5] = new BoundingBox(&green, demonModel, 6);
+	demonBox[6] = new BoundingBox(&green, demonModel, 7);
+	demonBox[7] = new BoundingBox(&green, demonModel, 8);
+	demonBox[8] = new BoundingBox(&green, demonModel, 9);
+	demonBox[9] = new BoundingBox(&green, demonModel, 10);
+	demonBox[10] = new BoundingBox(&green, demonModel, 11);
+	
+	obamidBox = new BoundingBox(&green, obamidModel,99);
 
 	//bruh = new BoundingBox(&green, demon);
 	wallModels(); // Loads all wall models in our program
