@@ -222,7 +222,7 @@ bool CheckDetection(glm::mat4 playerMatrix, Model* wall, glm::mat4 wallMath)
 	glm::vec4 maxValues = glm::vec4(box.xmax, box.ymax, box.zmax, 1.0f);
 	maxValues = wallMath * maxValues;
 
-	if (playerPos.x <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z <= maxValues.z && playerPos.x >= minValues.x && playerPos.y >= minValues.y && playerPos.z >= minValues.z)
+	if (playerPos.x - 2 <= maxValues.x && playerPos.y <= maxValues.y && playerPos.z -2 <= maxValues.z && playerPos.x +2 >= minValues.x && playerPos.y >= minValues.y && playerPos.z +2  >= minValues.z)
 	{
 		return true;
 	}
