@@ -96,11 +96,11 @@ void main()
 
 
     float linearAttenuation = min(1.0, 1.0/ (linearAttenuationCoefficient * length(lightPosition - eyePosition)));
-    vec4 texColor = vec4(0.0,0.0,0.0,1.0);
+    vec4 texColor = vec4(1.0,1.0,1.0,1.0);
 	if(useTexture > 0.0){
 		texColor = texture2D(diffuseTexture,texCoordsInterpolated);
 	}
 
     // Calculates the color of the surface given all the lights using the Phong Illumination Model
-    gl_FragColor = surfaceEmissive + ambient + /*linearAttenuation * */(diffuse + specular) + texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
+    gl_FragColor = surfaceEmissive + ambient + /*linearAttenuation * */(diffuse + specular) * texColor + (spotlightEffect * (diffuseOfSpotlight + specularOfSpotlight)) ;
 }
